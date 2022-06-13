@@ -1,0 +1,50 @@
+Name: user-opt-mq
+Host: 0.0.0.0
+Port: 3001
+
+Mode: test
+
+Log:
+  Encoding: plain
+
+#kq
+UserFavoriteOptServiceConf:
+  Name: UserFavoriteOptService
+  Brokers:
+    - 127.0.0.1:19092
+  Group: UserFavoriteOptService-group
+  Topic: UserFavoriteOptService-topic
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+UserCommentOptServiceConf:
+  Name: UserCommentOptService
+  Brokers:
+    - 127.0.0.1:19092
+  Group: UserCommentOptService-group
+  Topic: UserCommentOptService-topic
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+UserFollowOptServiceConf:
+  Name: UserCommentOptService
+  Brokers:
+    - 127.0.0.1:19092
+  Group: UserCommentOptService-group
+  Topic: UserCommentOptService-topic
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+
+#rpc
+UserOptService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: useroptservice.rpc
+  NonBlock: true
+
+

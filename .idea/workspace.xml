@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b625ddcc-f187-46eb-87a4-1911418a3af7" name="变更" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+        <option value="Go Application" />
+        <option value="Api Template" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../usr/local/go" />
+  <component name="GoLibraries">
+    <option name="urls">
+      <list>
+        <option value="file://$PROJECT_DIR$/../../go/" />
+      </list>
+    </option>
+    <option name="useGoPathFromSystemEnvironment" value="false" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../go/pkg/mod/github.com/sony/sonyflake@v1.0.0/sonyflake.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../go/pkg/mod/github.com/zeromicro/go-zero@v1.3.4/core/logx/tracelogger.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../go/pkg/mod/github.com/zeromicro/go-zero@v1.3.4/core/service/serviceconf.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../go/pkg/mod/github.com/zeromicro/go-zero@v1.3.4/rest/config.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../go/pkg/mod/github.com/zeromicro/go-zero@v1.3.4/rest/types.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../go/pkg/mod/golang.org/x/crypto@v0.0.0-20220525230936-793ad666bf5e/bcrypt/bcrypt.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../../usr/local/go/src/encoding/json/encode.go" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectId" id="2AENr7fUVyAhUSsDNqEMYy4sYcL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultApiTemplateProperty": "Api Template",
+    "DefaultGoTemplateProperty": "Go Application",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "//wsl$/Ubuntu/root/1.Healer/3.my/service/mq",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "AtomConfig"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\mq" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\rpc-user-operate" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\rpc-user-operate\userOptPb" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\rpc-video-service\model\UserModel" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\mq\internal" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\api\internal\svc" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\common\help\token" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\common\help" />
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build user.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="3.my" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/service/api/user.go" />
+      <output_directory value="$PROJECT_DIR$/service/api" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

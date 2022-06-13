@@ -1,0 +1,45 @@
+syntax = "v1"
+
+info(
+	title: "type title here"
+	desc: "type desc here"
+	author: "type author here"
+	email: "type email here"
+	version: "type version here"
+)
+
+import "user.api"
+import "video.api"
+
+type FavoriteListReq {
+	IdWithTokenReq
+}
+
+type FavoriteListRes {
+	Status
+	FavoriteList []*PubVideo `json:"video_list,omitempty"`
+}
+
+type CommentListReq {
+	IdWithTokenReq
+}
+
+type CommentListRes {
+	Status
+}
+
+@server(
+	group : userOpt
+	prefix : /douyin
+	middleware: AuthJWT
+)
+service user-api {
+	@doc "用户点赞列表"
+	@handler GetFavoriteList
+	get /favorite/list (FavoriteListReq) returns (FavoriteListRes)
+	
+	@doc "视频评论列表"
+	@handler GetCommentList
+	get /comment/list (CommentListReq) returns (CommentListRes)
+	
+}

@@ -1,0 +1,2 @@
+sql2pb -go_package ./userOptPb -package pb -host 120.79.222.123 -user healer -password healer000. -port 3306 \
+        -schema douyin2 -service_name UserOptService -table user_favorite_list  > UserOptService.proto

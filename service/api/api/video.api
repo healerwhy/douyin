@@ -1,0 +1,78 @@
+syntax = "v1"
+
+info(
+	title: "video"
+	desc: "/douyin/publish/action/---/douyin/publish/list/"
+	author: "healer"
+)
+
+import "user.api"
+
+type PubVideoReq {
+	// 以及文件类型
+	////	Data  []byte `form:"data"`
+	Token string `form:"token"`
+	Title string `form:"title"`
+}
+
+type PubVideoRes {
+	Status
+}
+
+type GetPubVideoListReq {
+	Token  string `form:"token"`
+	UserId int64  `form:"user_id"`
+}
+
+type PubVideo {
+	Id            int64  `json:"id"`
+	Author        Author `json:"author"`
+	PlayURL       string `json:"play_url"`
+	CoverURL      string `json:"cover_url"`
+	FavoriteCount int    `json:"favorite_count"`
+	CommentCount  int    `json:"comment_count"`
+	IsFavorite    bool   `json:"is_favorite"`
+	Title         string `json:"title"`
+}
+
+type GetPubVideoListRes {
+	Status
+	VideoPubList []*PubVideo `json:"video_list,omitempty"`
+}
+
+@server(
+	group: publish
+	prefix: /douyin/publish
+	middleware: AuthJWT
+)
+service user-api {
+	@doc "发布视频"
+	@handler PublishVideo
+	post /action (PubVideoReq) returns (PubVideoRes)
+
+	@doc "获取发布视频列表"
+	@handler GetPublishVideoList
+	get /list (GetPubVideoListReq) returns (GetPubVideoListRes)
+}
+
+type FeedVideoListReq {
+	Token    string `form:"token,optional"`
+	LastTime int64  `form:"last_time,optional"`
+}
+
+type FeedVideoListRes {
+	Status
+	NextTime  int64       `json:"next_time,omitempty"`
+	VideoList []*PubVideo `json:"video_list,omitempty"`
+}
+
+@server(
+	group: feed
+	prefix: /douyin/feed
+	middleware: IsLogin
+)
+service user-api {
+	@doc "获取视频流"
+	@handler FeedVideoList
+	get / (FeedVideoListReq) returns (FeedVideoListRes)
+}

@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option go_package ="./userOptPb";
+
+package pb;
+
+// ------------------------------------ 
+// Messages
+// ------------------------------------ 
+
+//--------------------------------userFavoriteList--------------------------------
+
+// 用户给视频点赞
+message AddFavoriteReq {
+  int64 videoId = 1; //videoId
+  int64 userId = 2; //userId
+  int64 isFavorite = 3; //点赞
+}
+
+message AddFavoriteResp {
+}
+
+// 取消点赞
+message CancelFavoriteReq {
+  int64 id = 1; //id
+}
+
+message CancelFavoriteResp {
+}
+
+// 获得用户和视频的点赞关系
+message GetUserFavoriteReq {
+  int64 userId = 1; //userId
+  repeated int64 videoIds = 2; //videoId
+}
+
+message GetUserFavoriteResp {
+  map<int64, bool> userFavoriteList = 1; //userFavoriteList
+  repeated int64 userFavoriteArr = 2; //userFavoriteArr
+}
+
+// 获得用户的关注列表
+message GetUserFollowReq {
+  int64 userId = 1; //userId
+  repeated int64 authIds = 2; //userId
+}
+message GetUserFollowResp {
+  map<int64, bool> userFollowList = 1; //用户和视频的关注关系
+}
+
+// 获得视频的评论列表
+message GetVideoCommentReq {
+  int64 video_id = 1; //video_id
+}
+message GetVideoCommentReqResp {
+  int64 id = 1; //video_id
+  
+}
+
+// ------------------------------------ 
+// Rpc Func
+// ------------------------------------ 
+
+service UserOptService{
+	 //-----------------------userFavoriteList----------------------- 
+	 rpc AddFavorite(AddFavoriteReq) returns (AddFavoriteResp);
+	 rpc CancelFavorite(CancelFavoriteResp) returns (CancelFavoriteResp);
+	 rpc GetUserFavorite(GetUserFavoriteReq) returns (GetUserFavoriteResp);
+   rpc GetUserFollow(GetUserFollowReq) returns (GetUserFollowResp);
+   rpc GetVideoComment(GetVideoCommentReq) returns (GetVideoCommentReqResp);
+}

@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+option go_package ="./userInfoPb";
+
+package userInfoPb;
+
+// ------------------------------------ 
+// Messages
+// ------------------------------------
+message RegisterReq {
+  string userName = 1; //name
+  string password = 2; //password
+}
+message RegisterResp {
+  int64 userId = 1; //userId
+  string token = 2; //token
+}
+
+message LoginReq {
+  string userName = 1; //userName
+  string password = 2; //password
+}
+message LoginResp {
+  int64   user_id = 1;
+  string token = 2; //token
+}
+
+message User {
+  int64 userId = 1; //userId
+  string userName = 2; //name
+  int64 followCount = 3; //followCount
+  int64 followerCount = 4; //followerCount
+  bool isFollowing = 5; //isFollowing
+}
+
+message UserInfoReq {
+  int64 userId = 1; //userId
+}
+
+message UserInfoResp {
+  User user = 1;
+}
+
+message AuthsInfoReq {
+  repeated int64 authIds = 1; //authIds
+  optional int64 curUserId = 2; //curUserId
+}
+
+message AuthsInfoResp {
+  map<int64, User> auths = 1; //auths
+}
+
+service UserInfoService{
+  //-----------------------user-----------------------
+	 rpc Register(RegisterReq) returns (RegisterResp);
+	 rpc Login(LoginReq) returns (LoginResp);
+   rpc Info(UserInfoReq) returns (UserInfoResp);
+   rpc AuthsInfo(AuthsInfoReq) returns (AuthsInfoResp);
+}

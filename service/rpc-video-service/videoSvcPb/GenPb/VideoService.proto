@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+option go_package ="./videoSvcPb";
+
+package pb;
+
+// ------------------------------------ 
+// Messages
+// ------------------------------------ 
+
+//--------------------------------video--------------------------------
+message PubVideoReq {
+  int64 AuthId = 1; //authId
+  string Title = 2; //title
+  string PlayURL = 3; //play_url
+  string CoverURL = 4; //cover_url
+}
+
+message PubVideoResp {
+}
+
+message Video {
+  int64 Id = 1; //id
+  string Title = 2; //title
+  string PlayURL = 3; //play_url
+  string CoverURL = 4; //cover_url
+  int64 FavoriteCount = 5; //favorite_count
+  int64 CommentCount = 6; //comment_count
+  bool IsFavorite = 7; //is_favorite
+  int64  AuthId = 8; // auth_id
+}
+
+message GetVideoListReq {
+  int64 AuthId = 1; //authId
+}
+
+message GetVideoListResp {
+  repeated Video VideoPubList = 1; //video_list
+}
+
+message FeedVideosReq {
+  int64 LastTime = 1; // last_time
+}
+message FeedVideosResp {
+  repeated Video VideoPubList = 1; //video_list
+  int64 NextTime = 2; // next_time
+}
+
+message MyFavoriteVideosReq {
+  repeated int64 VideoIdArr = 1; //videos_id
+}
+message MyFavoriteVideosResp {
+  repeated Video VideoPubList = 1; //video_list
+}
+
+// ------------------------------------ 
+// Rpc Func
+// ------------------------------------ 
+
+service VideoService{
+	 //-----------------------video----------------------- 
+	 rpc PubVideo(PubVideoReq) returns (PubVideoResp);
+   rpc GetVideoList(GetVideoListReq) returns (GetVideoListResp);
+   rpc FeedVideos(FeedVideosReq) returns (FeedVideosResp);
+   rpc GetMyFavoriteVideos(MyFavoriteVideosReq) returns (MyFavoriteVideosResp);
+}

@@ -1,0 +1,95 @@
+// api语法版本
+syntax = "v1"
+
+info(
+	author: "healer"
+	date:   "2022-6-7"
+	desc:   "api语法示例及语法说明"
+)
+
+//  common 请求
+type UserReq {
+	UserName string `form:"username"`
+	Password string `form:"password"`
+}
+
+type IdWithTokenReq {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+// common 返回
+type Status {
+	Code int64  `json:"status_code"`
+	Msg  string `json:"status_msg,omitempty"`
+}
+
+type IdWithTokenRes {
+	UserId int64  `json:"user_id,omitempty"`
+	Token  string `json:"token,omitempty"`
+}
+
+// 每个成员的tag只能绑定一种 json，form，path header
+// 注册
+type (
+	UserRegisterReq {
+		UserReq
+	}
+	UserRegisterRes {
+		Status
+		IdWithTokenRes
+	}
+)
+
+// 登录
+type (
+	UserLoginReq {
+		UserReq
+	}
+	UserLoginRes {
+		Status
+		IdWithTokenRes
+	}
+)
+
+// 用户信息
+type Author {
+	UserId           int64  `json:"id"`
+	UserName         string `json:"name"`
+	FollowCount   	 int64  `json:"follow_count"`
+	FollowerCount 	 int64  `json:"fans_count"`
+	IsFollow      bool   `json:"is_follow"`
+}
+
+type (
+	UserInfoReq {
+		IdWithTokenReq
+	}
+	UserInfoRes {
+		Status
+		User *Author `json:"user,omitempty"`
+	}
+)
+@server (
+	group : user
+	prefix : /douyin/user
+)
+service user-api {
+	@doc "用户注册"
+	@handler UserRegister
+	post /register (UserRegisterReq) returns (UserRegisterRes)
+	@doc "用户登录"
+	@handler UserLogin
+	post /login (UserLoginReq) returns (UserLoginRes)
+}
+
+@server (
+	group : user
+	prefix : /douyin/user
+	middleware: AuthJWT
+)
+service user-api {
+	@doc "用户信息"
+	@handler UserInfo
+	get / (UserInfoReq) returns (UserInfoRes)
+}
