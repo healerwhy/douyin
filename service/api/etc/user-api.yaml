@@ -1,0 +1,54 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+
+Mode: test
+
+Log:
+  Encoding: plain
+
+# 腾讯云
+COSConf:
+  xxxxxx
+
+# rpc
+UserInfoService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: userinfoservice.rpc
+  NonBlock: true
+
+VideoService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: videoservice.rpc
+  NonBlock: true
+
+UserOptService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: useroptservice.rpc
+  NonBlock: true
+
+Cache:
+  - Host: 120.79.222.123:6379
+    Pass: healer000.
+
+# kafka
+UserFavoriteOptServiceConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: UserFavoriteOptService-topic
+
+UserCommentOptServiceConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: UserCommentOptService-topic
+
+UserFollowOptServiceConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: UserFollowOptService-topic

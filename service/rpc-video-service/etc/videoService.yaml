@@ -1,0 +1,16 @@
+Name: videoservice.rpc
+ListenOn: 0.0.0.0:9999
+
+Mode: dev
+
+Etcd:
+  Hosts:
+    - 127.0.0.1:33333
+  Key: videoservice.rpc
+Log:
+  Encoding: plain
+DB:
+  DataSource: xxxxxx/douyin2?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheConf:
+  - Host: xxxxxx:6379
+    Pass: xxxxxx

@@ -1,0 +1,36 @@
+Name: user-opt-mq
+
+Log:
+  Encoding: plain
+Mode: test
+
+#kq
+UserFavoriteOptServiceConf:
+  Name: kq
+  Brokers:
+    - 127.0.0.1:9092
+  Group: UserFavoriteOptService-group
+  Topic: UserFavoriteOptService-topic
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+UserCommentOptServiceConf:
+  Name: UserCommentOptService
+  Brokers:
+    - 127.0.0.1:9092
+  Group: UserCommentOptService-group
+  Topic: UserCommentOptService-topic
+  Offset: first
+  Consumers: 1
+  Processors: 1
+
+UserFollowOptServiceConf:
+  Name: UserFollowOptService
+  Brokers:
+    - 127.0.0.1:9092
+  Group: UserFollowOptService-group
+  Topic: UserFollowOptService-topic
+  Offset: first
+  Consumers: 1
+  Processors: 1

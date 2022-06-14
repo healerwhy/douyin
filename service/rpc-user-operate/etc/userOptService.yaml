@@ -1,0 +1,17 @@
+Name: useroptservice.rpc
+ListenOn: 0.0.0.0:9998
+
+Mode: dev
+
+Etcd:
+  Hosts:
+    - 127.0.0.1:33333
+  Key: useroptservice.rpc
+
+Log:
+  Encoding: plain
+DB:
+  DataSource: xxxxxx0.@tcp(120.79.222.123:3306)/douyin2?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheConf:
+- Host: 120xxxxxx379
+  Pass: xxxxxx0.
