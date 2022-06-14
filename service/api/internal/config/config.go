@@ -6,17 +6,20 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
+type KqConfig struct {
+	Brokers []string
+	Topic   string
+}
+
 type Config struct {
 	rest.RestConf
-	//JWTAuth struct {
-	//	AccessSecret string
-	//	AccessExpire int64
-	//}
-	Cache           cache.CacheConf
+
+	Cache cache.CacheConf
+	// rpc
 	UserInfoService zrpc.RpcClientConf
 	VideoService    zrpc.RpcClientConf
 	UserOptService  zrpc.RpcClientConf
-
+	// 腾讯云
 	COSConf struct {
 		SecretId    string
 		SecretKey   string
@@ -24,4 +27,8 @@ type Config struct {
 		VideoBucket string
 		CoverBucket string
 	}
+	//// kafka
+	//UserFavoriteOptServiceConf kq.KqConf
+	//UserCommentOptServiceConf  kq.KqConf
+	//UserFollowOptServiceConf   kq.KqConf
 }

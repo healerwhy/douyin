@@ -23,7 +23,7 @@ passwd=healer000.
 
 
 echo "开始连接库：$dbname 的表：$tablename1"
-#goctl model mysql datasource -url="${username}:${passwd}@tcp(${host}:${port})/${dbname}" -table="${tablename1}"  -dir="${modeldir}" --style=goZero --cache=true --home=../../../../tpl
+goctl model mysql datasource -url="${username}:${passwd}@tcp(${host}:${port})/${dbname}" -table="${tablename1}"  -dir="${modeldir}" --style=goZero --cache=true --home=../../../../tpl
 echo "开始连接库：$dbname 的表：$tablename2"
 goctl model mysql datasource -url="${username}:${passwd}@tcp(${host}:${port})/${dbname}" -table="${tablename2}"  -dir="${modeldir}" --style=goZero --cache=true --home=../../../../tpl
 #echo "开始连接库：$dbname 的表：$tablename3"

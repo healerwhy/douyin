@@ -2,11 +2,10 @@ package kq
 
 import (
 	"context"
-	"douyin/service/mq/internal/kqueue"
 	"douyin/service/mq/internal/svc"
-	"douyin/service/rpc-user-operate/useroptservice"
+	"douyin/service/mq/internal/types"
 	"encoding/json"
-	"github.com/pkg/errors"
+	"fmt"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -19,7 +18,7 @@ type UserFavoriteOpt struct {
 	svcCtx *svc.ServiceContext
 }
 
-func NewPaymentUpdateStatusMq(ctx context.Context, svcCtx *svc.ServiceContext) *UserFavoriteOpt {
+func NewUserFavoriteUpdateMq(ctx context.Context, svcCtx *svc.ServiceContext) *UserFavoriteOpt {
 	return &UserFavoriteOpt{
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -27,8 +26,7 @@ func NewPaymentUpdateStatusMq(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *UserFavoriteOpt) Consume(_, val string) error {
-
-	var message kqueue.UserFavoriteOptMessage
+	var message types.UserFavoriteOptMessage
 	if err := json.Unmarshal([]byte(val), &message); err != nil {
 		logx.WithContext(l.ctx).Error("PaymentUpdateStatusMq->Consume Unmarshal err : %v , val : %s", err, val)
 		return err
@@ -43,15 +41,11 @@ func (l *UserFavoriteOpt) Consume(_, val string) error {
 }
 
 // 处理逻辑
-func (l *UserFavoriteOpt) execService(message kqueue.UserFavoriteOptMessage) error {
+func (l *UserFavoriteOpt) execService(message types.UserFavoriteOptMessage) error {
 
-	orderTradeState := l.getUserOpt(message.OptStatus)
-	if orderTradeState != -99 {
-		//update homestay order state
-		_, err := l.svcCtx.UserOptSvcRpcClient.AddFavorite(l.ctx, &useroptservice.AddFavoriteReq{})
-		if err != nil {
-			return errors.Wrap(err, " add favorite fail")
-		}
+	status := l.getUserOpt(message.OptStatus)
+	if status != -99 {
+		fmt.Printf("status: %d, %s \n", status, message.Opt)
 	}
 
 	return nil
@@ -60,11 +54,11 @@ func (l *UserFavoriteOpt) execService(message kqueue.UserFavoriteOptMessage) err
 //Get order status based on payment status.
 func (l *UserFavoriteOpt) getUserOpt(Status int64) int64 {
 
-	switch 1 {
+	switch Status {
+	case 1:
+		return 1111
 	case 2:
-		return 2
-	case 3:
-		return 1
+		return 2222
 	default:
 		return -99
 	}

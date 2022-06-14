@@ -2,10 +2,10 @@ package logic
 
 import (
 	"context"
-	"douyin/common/help/int64ToStr"
 	"douyin/common/xerr"
 	"douyin/service/rpc-user-operate/internal/svc"
 	"douyin/service/rpc-user-operate/userOptPb"
+	"github.com/Masterminds/squirrel"
 	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -29,7 +29,7 @@ func NewGetUserFavoriteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 func (l *GetUserFavoriteLogic) GetUserFavorite(in *userOptPb.GetUserFavoriteReq) (*userOptPb.GetUserFavoriteResp, error) {
 
 	if in.VideoIds != nil { // 给 feed 接口使用 查看用户对以下videoids的点赞状态
-		whereBuilder := l.svcCtx.UserFavorite.RowBuilder().Where("user_id = ? and In (?) and is_favorite != 0 ", in.UserId, int64ToStr.Int64ToStr(in.VideoIds))
+		whereBuilder := l.svcCtx.UserFavorite.RowBuilder().Where(squirrel.Eq{"user_id": in.UserId, "video_id": in.VideoIds, "is_favorite": 0})
 
 		res, err := l.svcCtx.UserFavorite.FindAll(l.ctx, whereBuilder, "")
 		if err != nil {
@@ -38,12 +38,13 @@ func (l *GetUserFavoriteLogic) GetUserFavorite(in *userOptPb.GetUserFavoriteReq)
 
 		// 该用户对视频的点赞映射
 		var respUserFavoriteList map[int64]bool
-		respUserFavoriteList = make(map[int64]bool, len(res))
 		if len(res) > 0 {
+			respUserFavoriteList = make(map[int64]bool, len(res))
 			for _, v := range res {
 				respUserFavoriteList[v.VideoId] = true
 			}
 		}
+
 		return &userOptPb.GetUserFavoriteResp{
 			UserFavoriteList: respUserFavoriteList,
 		}, nil

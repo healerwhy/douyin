@@ -47,8 +47,8 @@ func (m *IsLoginMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 			// 把r传递给下一个handler
 			next(w, r)
+		} else {
+			next(w, r)
 		}
-		next(w, r)
-
 	}
 }

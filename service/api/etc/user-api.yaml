@@ -7,10 +7,7 @@ Mode: test
 Log:
   Encoding: plain
 
-#JWTAuth:
-#  AccessSecret: healerrrrr
-#  AccessExpire: 86400
-
+# 腾讯云
 COSConf:
   SecretId: AKIDMWR6WgbHhrmRr33oKaaLvGLAk49yXrwm
   SecretKey: d07yZv1rSovmNjpPlskMjqhNnxsXw5zd
@@ -19,6 +16,7 @@ COSConf:
   CoverBucket: https://cover-1312359504.cos.ap-guangzhou.myqcloud.com
   CommentBucket: https://comment-1312359504.cos.ap-guangzhou.myqcloud.com
 
+# rpc
 UserInfoService:
   Etcd:
     Hosts:
@@ -43,3 +41,19 @@ UserOptService:
 Cache:
   - Host: 120.79.222.123:6379
     Pass: healer000.
+
+## kafka
+#UserFavoriteOptServiceConf:
+#  Brokers:
+#    - 127.0.0.1:9092
+#  Topic: UserFavoriteOptService-topic
+#
+#UserCommentOptServiceConf:
+#  Brokers:
+#    - 127.0.0.1:9092
+#  Topic: UserCommentOptService-topic
+#
+#UserFollowOptServiceConf:
+#  Brokers:
+#    - 127.0.0.1:9092
+#  Topic: UserFollowOptService-topic

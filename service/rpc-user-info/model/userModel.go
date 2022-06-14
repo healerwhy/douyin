@@ -106,7 +106,7 @@ func (m *defaultUserModel) FindCount(ctx context.Context, countBuilder squirrel.
 func (m *defaultUserModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*User, error) {
 
 	if orderBy == "" {
-		rowBuilder = rowBuilder.OrderBy("user_id DESC")
+		rowBuilder = rowBuilder.OrderBy("id DESC")
 	} else {
 		rowBuilder = rowBuilder.OrderBy(orderBy)
 	}

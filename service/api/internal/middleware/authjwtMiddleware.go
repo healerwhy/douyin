@@ -6,7 +6,9 @@ import (
 	"douyin/common/xerr"
 	"douyin/service/api/internal/types"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -26,6 +28,7 @@ func (m *AuthJWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		status := new(types.Status)
 		token := r.FormValue("token")
+
 		if token == "" {
 			status.Code = xerr.REUQEST_PARAM_ERROR
 			status.Msg = "no token"
@@ -44,6 +47,28 @@ func (m *AuthJWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		id := r.FormValue("user_id")
+		var userId int64
+		if id != "" {
+			res, err := strconv.ParseInt(id, 10, 64)
+			if err != nil {
+				status.Code = xerr.REUQEST_PARAM_ERROR
+				status.Msg = fmt.Sprintf("param error user_id : %d", res)
+				res, _ := json.Marshal(status)
+				_, _ = w.Write(res)
+				return
+			}
+			userId = res
+		}
+
+		if userId != 0 && userId != claims.UserId {
+			status.Code = xerr.REUQEST_PARAM_ERROR
+			status.Msg = "user_id not match"
+			res, _ := json.Marshal(status)
+			_, _ = w.Write(res)
+			return
+		}
+
 		// 过期时间点 小于当前时间 表示过期
 		if claims.ExpireAt < time.Now().Unix() {
 			status.Code = xerr.REUQEST_PARAM_ERROR
@@ -52,7 +77,6 @@ func (m *AuthJWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			_, _ = w.Write(res)
 			return
 		}
-
 		r = r.Clone(context.WithValue(r.Context(), myToken.CurrentUserId("CurrentUserId"), claims.UserId))
 
 		next(w, r)

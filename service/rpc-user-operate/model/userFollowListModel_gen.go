@@ -46,8 +46,9 @@ type (
 		Id         int64     `db:"id"`
 		UserId     int64     `db:"user_id"`
 		FollowId   int64     `db:"follow_id"`
+		IsFollow   int64     `db:"is_follow"`
 		DelState   int64     `db:"del_state"`
-		CreateTime time.Time `db:"create_time"`
+		UpdateTime time.Time `db:"update_time"`
 	}
 )
 
@@ -62,11 +63,11 @@ func (m *defaultUserFollowListModel) Insert(ctx context.Context, session sqlx.Se
 	douyin2UserFollowListIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserFollowListIdPrefix, data.Id)
 	douyin2UserFollowListUserIdFollowIdKey := fmt.Sprintf("%s%v:%v", cacheDouyin2UserFollowListUserIdFollowIdPrefix, data.UserId, data.FollowId)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, userFollowListRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, userFollowListRowsExpectAutoSet)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.UserId, data.FollowId, data.DelState)
+			return session.ExecCtx(ctx, query, data.UserId, data.FollowId, data.IsFollow, data.DelState)
 		}
-		return conn.ExecCtx(ctx, query, data.UserId, data.FollowId, data.DelState)
+		return conn.ExecCtx(ctx, query, data.UserId, data.FollowId, data.IsFollow, data.DelState)
 	}, douyin2UserFollowListIdKey, douyin2UserFollowListUserIdFollowIdKey)
 }
 
@@ -113,9 +114,9 @@ func (m *defaultUserFollowListModel) Update(ctx context.Context, session sqlx.Se
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userFollowListRowsWithPlaceHolder)
 		if session != nil {
-			return session.ExecCtx(ctx, query, data.UserId, data.FollowId, data.DelState, data.Id)
+			return session.ExecCtx(ctx, query, data.UserId, data.FollowId, data.IsFollow, data.DelState, data.Id)
 		}
-		return conn.ExecCtx(ctx, query, data.UserId, data.FollowId, data.DelState, data.Id)
+		return conn.ExecCtx(ctx, query, data.UserId, data.FollowId, data.IsFollow, data.DelState, data.Id)
 	}, douyin2UserFollowListIdKey, douyin2UserFollowListUserIdFollowIdKey)
 }
 

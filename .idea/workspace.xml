@@ -1,11 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.24910118" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b625ddcc-f187-46eb-87a4-1911418a3af7" name="变更" comment="">
+      <change afterPath="$PROJECT_DIR$/deploy/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/mq/internal/mqs/kq/userCommentUpdate.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/mq/internal/mqs/kq/userFollowUpdate.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/mq/internal/types/message.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/producer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/help/int64ToStr/int64TOStr.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api/user.api" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api/user.api" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/etc/user-api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/etc/user-api.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/internal/handler/feed/feedVideoListHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/handler/feed/feedVideoListHandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/internal/logic/feed/feedVideoListLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/logic/feed/feedVideoListLogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/internal/middleware/authjwtMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/middleware/authjwtMiddleware.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/internal/middleware/isloginMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/middleware/isloginMiddleware.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/internal/types/types.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/types/types.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mq/etc/order.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mq/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mq/internal/kqueue/message.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mq/internal/listen/kqMqs.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/listen/kqMqs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mq/internal/mqs/kq/paymentUpdateStatus.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/mqs/kq/userFavoriteUpdate.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/mq/internal/svc/serviceContext.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/svc/serviceContext.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/mq/order.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/mq.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/internal/logic/authsInfoLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-info/internal/logic/authsInfoLogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/model/userModel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/model/userModel_gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/model/vars.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFavoriteLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFavoriteLogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFollowLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFollowLogic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/GenModel/GenModel.sh" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/model/GenModel/GenModel.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFavoriteListModel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFavoriteListModel_gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFollowListModel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFollowListModel_gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/userOptPb/GenPb/UserOptService.proto" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/userOptPb/GenPb/UserOptService.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-video-service/model/vars.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-video-service/model/videoModel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rpc-video-service/model/videoModel_gen.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,28 +109,28 @@
     "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
     "WebServerToolWindowFactoryState": "true",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu/root/1.Healer/3.my/service/mq",
+    "last_opened_file_path": "//wsl$/Ubuntu/root/1.Healer/douyin/service",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "AtomConfig"
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\douyin\service" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\mq" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\rpc-user-operate" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\rpc-user-operate\userOptPb" />
-      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\rpc-video-service\model\UserModel" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\root\1.Healer\douyin\deploy" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\mq\internal" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service\api\internal\svc" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\common\help\token" />
       <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\common\help" />
-      <recent name="\\wsl$\Ubuntu\root\1.Healer\3.my\service" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Shell Script.GenModel.sh">
     <configuration name="go build user.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="3.my" />
       <working_directory value="$PROJECT_DIR$" />
@@ -99,10 +140,46 @@
       <output_directory value="$PROJECT_DIR$/service/api" />
       <method v="2" />
     </configuration>
+    <configuration name="GenModel.sh" type="ShConfigurationType" temporary="true">
+      <option name="SCRIPT_TEXT" value="" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/service/rpc-user-operate/model/GenModel/GenModel.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$/service/rpc-user-operate/model/GenModel" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Shell Script.GenModel.sh" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/douyin" />
+    </ignored-roots>
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

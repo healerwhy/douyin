@@ -5,14 +5,16 @@ package model
 import (
 	"context"
 	"database/sql"
-	"douyin/common/globalkey"
 	"fmt"
+	"strings"
+	"time"
+
+	"douyin/common/globalkey"
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
-	"strings"
 )
 
 var (
@@ -41,11 +43,12 @@ type (
 	}
 
 	UserFavoriteList struct {
-		Id         int64 `db:"id"`
-		UserId     int64 `db:"user_id"`
-		VideoId    int64 `db:"video_id"`
-		IsFavorite int64 `db:"is_favorite"` // 点赞
-		DelState   int64 `db:"del_state"`
+		Id         int64     `db:"id"`
+		UserId     int64     `db:"user_id"`
+		VideoId    int64     `db:"video_id"`
+		IsFavorite int64     `db:"is_favorite"` // 点赞
+		DelState   int64     `db:"del_state"`
+		UpdateTime time.Time `db:"update_time"`
 	}
 )
 

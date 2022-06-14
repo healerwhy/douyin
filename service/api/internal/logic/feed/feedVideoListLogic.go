@@ -7,6 +7,7 @@ import (
 	"douyin/service/rpc-user-info/userInfoPb"
 	"douyin/service/rpc-user-operate/useroptservice"
 	"douyin/service/rpc-video-service/videoSvcPb"
+	"fmt"
 	"github.com/jinzhu/copier"
 	"sort"
 	"time"
@@ -51,17 +52,16 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 		}, nil
 	}
 
-	var videoList []*types.PubVideo // 最终返回的视频列表
-
 	/*
 		如果存在作者或者说有视频 才回去关注是否对视频点赞 对作者关注
 	*/
-
-	// 把视频里的所用用户的信息找出来 并去重
-	var authIdsTemp map[int64]interface{}
-	var authIds []int64
+	var videoList []*types.PubVideo // 最终返回的视频列表
 
 	if len(videos.VideoPubList) > 0 {
+		var authIdsTemp map[int64]interface{}
+		var authIds []int64
+
+		// 把视频里的所用用户的信息找出来 并去重
 		authIdsTemp = make(map[int64]interface{}, len(videos.VideoPubList))
 		for _, v := range videos.VideoPubList {
 			authIdsTemp[v.AuthId] = nil
@@ -96,6 +96,7 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 				videoIds = append(videoIds, v.Id)
 			}
 			sort.Slice(videoIds, func(i, j int) bool { return videoIds[i] < videoIds[j] }) // 升序排列
+
 			userId := l.ctx.Value(myToken.CurrentUserId("LoginUserId")).(int64)
 			userFavoriteList, err = l.svcCtx.UserOptSvcRpcClient.GetUserFavorite(l.ctx, &useroptservice.GetUserFavoriteReq{
 				UserId:   userId,
@@ -115,11 +116,21 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 				UserId:  userId,
 				AuthIds: authIds,
 			})
+			/*
+				Author        Author `json:"author"`
+				IsFavorite    bool   `json:"is_favorite"`
 
+				IsFavorite    bool   `protobuf:"varint,7,opt,name=IsFavorite,proto3" json:"IsFavorite,omitempty"`
+				AuthId        int64  `protobuf:"varint,8,opt,name=AuthId,proto3" json:"AuthId,omitempty"`
+
+				IsFollow      bool   `json:"is_follow"
+				IsFollowing   bool
+			*/
 			for _, v := range videos.VideoPubList {
 				var video types.PubVideo
 				_ = copier.Copy(&video, v)
 				_ = copier.Copy(&video.Author, authsInfo.Auths[v.AuthId])
+				fmt.Printf("%+v\n", video.Author)
 				// 用户对该视频是否点赞
 				video.IsFavorite = userFavoriteList.UserFavoriteList[v.Id]
 				// 用户对该视频的作者是否关注
@@ -132,6 +143,7 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 				var video types.PubVideo
 				_ = copier.Copy(&video, v)
 				_ = copier.Copy(&video.Author, authsInfo.Auths[v.AuthId])
+				fmt.Printf("%+v\n", video.Author)
 				video.IsFavorite = false
 				video.Author.IsFollow = false
 
@@ -139,7 +151,6 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 			}
 		}
 	}
-	logx.Errorf("videoList: %+v", videoList)
 
 	return &types.FeedVideoListRes{
 		Status: types.Status{
