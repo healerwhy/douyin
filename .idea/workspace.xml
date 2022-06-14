@@ -8,45 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b625ddcc-f187-46eb-87a4-1911418a3af7" name="变更" comment="">
-      <change afterPath="$PROJECT_DIR$/deploy/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/mq/internal/mqs/kq/userCommentUpdate.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/mq/internal/mqs/kq/userFollowUpdate.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/mq/internal/types/message.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/producer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/help/int64ToStr/int64TOStr.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/api/user.api" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api/user.api" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/etc/user-api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/etc/user-api.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/api/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/config/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/api/internal/handler/feed/feedVideoListHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/handler/feed/feedVideoListHandler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/api/internal/logic/feed/feedVideoListLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/logic/feed/feedVideoListLogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/internal/middleware/authjwtMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/middleware/authjwtMiddleware.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/internal/middleware/isloginMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/middleware/isloginMiddleware.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/internal/types/types.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/internal/types/types.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/etc/order.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/internal/kqueue/message.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/internal/listen/kqMqs.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/listen/kqMqs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/internal/mqs/kq/paymentUpdateStatus.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/mqs/kq/userFavoriteUpdate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/internal/svc/serviceContext.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/internal/svc/serviceContext.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/mq/order.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/mq/mq.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/internal/logic/authsInfoLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-info/internal/logic/authsInfoLogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/model/userModel.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/model/userModel_gen.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-info/model/vars.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFavoriteLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFavoriteLogic.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFollowLogic.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/internal/logic/getUserFollowLogic.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/GenModel/GenModel.sh" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/model/GenModel/GenModel.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFavoriteListModel.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFavoriteListModel_gen.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFollowListModel.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/model/userFollowListModel_gen.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-user-operate/userOptPb/GenPb/UserOptService.proto" beforeDir="false" afterPath="$PROJECT_DIR$/service/rpc-user-operate/userOptPb/GenPb/UserOptService.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-video-service/model/vars.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-video-service/model/videoModel.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/rpc-video-service/model/videoModel_gen.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

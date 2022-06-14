@@ -15,3 +15,9 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+*/etc
+*/GenModel                                                                                                                                                                               
+*.sh
+
+.idea/
