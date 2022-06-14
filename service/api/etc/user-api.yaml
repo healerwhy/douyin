@@ -34,7 +34,7 @@ UserOptService:
   NonBlock: true
 
 Cache:
-  - Host: 120.79.222.123:6379
+  - Host: xxxxx:6379
     Pass: healer000.
 
 # kafka
