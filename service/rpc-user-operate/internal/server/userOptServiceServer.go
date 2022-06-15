@@ -23,16 +23,6 @@ func NewUserOptServiceServer(svcCtx *svc.ServiceContext) *UserOptServiceServer {
 }
 
 // -----------------------userFavoriteList-----------------------
-func (s *UserOptServiceServer) AddFavorite(ctx context.Context, in *userOptPb.AddFavoriteReq) (*userOptPb.AddFavoriteResp, error) {
-	l := logic.NewAddFavoriteLogic(ctx, s.svcCtx)
-	return l.AddFavorite(in)
-}
-
-func (s *UserOptServiceServer) CancelFavorite(ctx context.Context, in *userOptPb.CancelFavoriteResp) (*userOptPb.CancelFavoriteResp, error) {
-	l := logic.NewCancelFavoriteLogic(ctx, s.svcCtx)
-	return l.CancelFavorite(in)
-}
-
 func (s *UserOptServiceServer) GetUserFavorite(ctx context.Context, in *userOptPb.GetUserFavoriteReq) (*userOptPb.GetUserFavoriteResp, error) {
 	l := logic.NewGetUserFavoriteLogic(ctx, s.svcCtx)
 	return l.GetUserFavorite(in)
@@ -41,4 +31,9 @@ func (s *UserOptServiceServer) GetUserFavorite(ctx context.Context, in *userOptP
 func (s *UserOptServiceServer) GetUserFollow(ctx context.Context, in *userOptPb.GetUserFollowReq) (*userOptPb.GetUserFollowResp, error) {
 	l := logic.NewGetUserFollowLogic(ctx, s.svcCtx)
 	return l.GetUserFollow(in)
+}
+
+func (s *UserOptServiceServer) UpdateFavoriteStatus(ctx context.Context, in *userOptPb.UpdateFavoriteStatusReq) (*userOptPb.UpdateFavoriteStatusResp, error) {
+	l := logic.NewUpdateFavoriteStatusLogic(ctx, s.svcCtx)
+	return l.UpdateFavoriteStatus(in)
 }

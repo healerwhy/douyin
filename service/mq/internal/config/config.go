@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type Config struct {
@@ -13,4 +14,7 @@ type Config struct {
 	UserFavoriteOptServiceConf kq.KqConf
 	UserCommentOptServiceConf  kq.KqConf
 	UserFollowOptServiceConf   kq.KqConf
+
+	// 操作rpc
+	UserOptServiceConf zrpc.RpcClientConf
 }

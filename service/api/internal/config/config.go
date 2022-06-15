@@ -27,8 +27,8 @@ type Config struct {
 		VideoBucket string
 		CoverBucket string
 	}
-	//// kafka
-	//UserFavoriteOptServiceConf kq.KqConf
-	//UserCommentOptServiceConf  kq.KqConf
-	//UserFollowOptServiceConf   kq.KqConf
+	// kafka
+	UserFavoriteOptServiceConf KqConfig
+	UserCommentOptServiceConf  KqConfig
+	UserFollowOptServiceConf   KqConfig
 }

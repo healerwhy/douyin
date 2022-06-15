@@ -11,22 +11,15 @@ package pb;
 //--------------------------------userFavoriteList--------------------------------
 
 // 用户给视频点赞
-message AddFavoriteReq {
+message UpdateFavoriteStatusReq {
   int64 videoId = 1; //videoId
   int64 userId = 2; //userId
-  int64 isFavorite = 3; //点赞
+  int64 actionType = 3; //点赞
 }
 
-message AddFavoriteResp {
+message UpdateFavoriteStatusResp {
 }
 
-// 取消点赞
-message CancelFavoriteReq {
-  int64 id = 1; //id
-}
-
-message CancelFavoriteResp {
-}
 
 // 获得用户和视频的点赞关系
 message GetUserFavoriteReq {
@@ -62,9 +55,7 @@ message GetVideoCommentReqResp {
 
 service UserOptService{
 	 //-----------------------userFavoriteList----------------------- 
-	 rpc AddFavorite(AddFavoriteReq) returns (AddFavoriteResp);
-	 rpc CancelFavorite(CancelFavoriteResp) returns (CancelFavoriteResp);
 	 rpc GetUserFavorite(GetUserFavoriteReq) returns (GetUserFavoriteResp);
    rpc GetUserFollow(GetUserFollowReq) returns (GetUserFollowResp);
-   rpc GetVideoComment(GetVideoCommentReq) returns (GetVideoCommentReqResp);
+   rpc UpdateFavoriteStatus(UpdateFavoriteStatusReq) returns (UpdateFavoriteStatusResp);
 }

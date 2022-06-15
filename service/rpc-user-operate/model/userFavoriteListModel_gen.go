@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"douyin/common/globalkey"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -30,6 +31,7 @@ var (
 type (
 	userFavoriteListModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *UserFavoriteList) (sql.Result, error)
+		InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*UserFavoriteList, error)
 		FindOneByUserIdVideoId(ctx context.Context, userId int64, videoId int64) (*UserFavoriteList, error)
 		Update(ctx context.Context, session sqlx.Session, data *UserFavoriteList) (sql.Result, error)
@@ -60,6 +62,7 @@ func newUserFavoriteListModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUser
 }
 
 func (m *defaultUserFavoriteListModel) Insert(ctx context.Context, session sqlx.Session, data *UserFavoriteList) (sql.Result, error) {
+	// data.DeletedTime = time.Unix(0,0)
 	douyin2UserFavoriteListIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserFavoriteListIdPrefix, data.Id)
 	douyin2UserFavoriteListUserIdVideoIdKey := fmt.Sprintf("%s%v:%v", cacheDouyin2UserFavoriteListUserIdVideoIdPrefix, data.UserId, data.VideoId)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -71,6 +74,18 @@ func (m *defaultUserFavoriteListModel) Insert(ctx context.Context, session sqlx.
 	}, douyin2UserFavoriteListIdKey, douyin2UserFavoriteListUserIdVideoIdKey)
 }
 
+func (m *defaultUserFavoriteListModel) InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error) {
+
+	douyin2UserFavoriteListUserIdVideoIdKey := fmt.Sprintf("%s%v:%v", cacheDouyin2UserFavoriteListUserIdVideoIdPrefix, userId, objId)
+
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%d,%d,?) ON DUPLICATE KEY UPDATE %s=?", m.table, field, userId, objId, setStatus)
+		if session != nil {
+			return session.ExecCtx(ctx, query, opt, opt)
+		}
+		return conn.ExecCtx(ctx, query, opt, opt)
+	}, douyin2UserFavoriteListUserIdVideoIdKey)
+}
 func (m *defaultUserFavoriteListModel) FindOne(ctx context.Context, id int64) (*UserFavoriteList, error) {
 	douyin2UserFavoriteListIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserFavoriteListIdPrefix, id)
 	var resp UserFavoriteList

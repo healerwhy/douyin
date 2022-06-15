@@ -42,7 +42,6 @@ func (l *UserLoginLogic) UserLogin(req *types.UserLoginReq) (resp *types.UserLog
 			},
 		}, nil
 	}
-	logx.Errorf("login success, userId: %d, token: %s", res.UserId, res.Token)
 	return &types.UserLoginRes{
 		Status: types.Status{
 			Code: xerr.OK,

@@ -4,6 +4,12 @@ Log:
   Encoding: plain
 Mode: test
 
+UserOptServiceConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: useroptservice.rpc
+
 #kq
 UserFavoriteOptServiceConf:
   Name: kq

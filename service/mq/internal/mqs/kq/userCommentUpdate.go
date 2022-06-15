@@ -2,8 +2,8 @@ package kq
 
 import (
 	"context"
+	"douyin/common/messageTypes"
 	"douyin/service/mq/internal/svc"
-	"douyin/service/mq/internal/types"
 	"encoding/json"
 	"fmt"
 
@@ -26,14 +26,14 @@ func NewUserCommentUpdateMq(ctx context.Context, svcCtx *svc.ServiceContext) *Us
 }
 
 func (l *UserCommentOpt) Consume(_, val string) error {
-	var message types.UserCommentOptMessage
+	var message messageTypes.UserCommentOptMessage
 	if err := json.Unmarshal([]byte(val), &message); err != nil {
-		logx.WithContext(l.ctx).Error("NewUserCommentUpdateMq->Consume Unmarshal err : %v , val : %s", err, val)
+		logx.WithContext(l.ctx).Error("UserCommentOptMessage->Consume Unmarshal err : %v , val : %s", err, val)
 		return err
 	}
 
 	if err := l.execService(message); err != nil {
-		logx.WithContext(l.ctx).Error("NewUserCommentUpdateMq->execService  err : %v , val : %s , message:%+v", err, val, message)
+		logx.WithContext(l.ctx).Error("UserCommentOptMessage->execService  err : %v , val : %s , message:%+v", err, val, message)
 		return err
 	}
 
@@ -41,11 +41,11 @@ func (l *UserCommentOpt) Consume(_, val string) error {
 }
 
 // 处理逻辑
-func (l *UserCommentOpt) execService(message types.UserCommentOptMessage) error {
+func (l *UserCommentOpt) execService(message messageTypes.UserCommentOptMessage) error {
 
-	status := l.getUserOpt(message.OptStatus)
+	status := l.getUserOpt(message.ActionType)
 	if status != -99 { //update mysql judging by status
-		fmt.Printf("status: %d, %s \n", status, message.Opt)
+		fmt.Printf("status: %d, %s \n", status, message.VideoId)
 	}
 
 	return nil

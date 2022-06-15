@@ -11,7 +11,7 @@ Etcd:
 Log:
   Encoding: plain
 DB:
-  DataSource: xxxxxx0.@tcp(120.79.222.123:3306)/douyin2?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: healer:healer000.@tcp(120.79.222.123:3306)/douyin2?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 CacheConf:
-- Host: 120xxxxxx379
-  Pass: xxxxxx0.
+- Host: 120.79.222.123:6379
+  Pass: healer000.

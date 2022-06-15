@@ -1,15 +1,53 @@
 syntax = "v1"
 
-info(
-	title: "type title here"
-	desc: "type desc here"
-	author: "type author here"
-	email: "type email here"
-	version: "type version here"
-)
-
 import "user.api"
 import "video.api"
+
+type FavoriteOptReq {
+	Token      string `form:"token"`
+	VideoId    int64  `form:"video_id"`
+	ActionType int32  `form:"action_type"`
+}
+
+type FavoriteOptRes {
+	Status
+}
+
+type CommentOptReq {
+	IdWithTokenReq
+	VideoId     string `form:"video_id"`
+	ActionType  int32  `form:"action_type"`
+	CommentText string `form:"comment_text"`
+	CommentId   int64  `form:"comment_id"`
+}
+
+type Comment {
+	Comment_id  int64  `json:"id"`
+	User        Author `json:"user"`
+	Content     string `json:"content"`
+	Create_time string `json:"create_date"`
+}
+
+type CommentOptRes {
+	Status
+	Comment Comment `json:"comment,omitempty"`
+}
+
+@server(
+	group : userOpt
+	prefix : /douyin
+	middleware: AuthJWT
+)
+
+service user-api {
+	@doc "用户点赞"
+	@handler FavoriteOpt
+	post /favorite/action (FavoriteOptReq) returns (FavoriteOptRes)
+	
+	@doc "用户评论"
+	@handler CommentOpt
+	post /comment/action (CommentOptReq) returns (CommentOptRes)
+}
 
 type FavoriteListReq {
 	IdWithTokenReq
@@ -26,6 +64,7 @@ type CommentListReq {
 
 type CommentListRes {
 	Status
+	CommentList []*Comment `json:"comment_list,omitempty"`
 }
 
 @server(

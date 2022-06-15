@@ -30,6 +30,8 @@ type (
 		FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, pageSize int64, orderBy string) ([]*UserFollowList, error)
 		FindPageListByIdDESC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMinId, pageSize int64) ([]*UserFollowList, error)
 		FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*UserFollowList, error)
+		// InsertOrUpdate(ctx context.Context, field string, setStatus string, userId, optId , opt int64) (sql.Result, error)
+
 	}
 
 	customUserFollowListModel struct {
@@ -46,6 +48,7 @@ func NewUserFollowListModel(conn sqlx.SqlConn, c cache.CacheConf) UserFollowList
 
 func (m *defaultUserFollowListModel) DeleteSoft(ctx context.Context, session sqlx.Session, data *UserFollowList) error {
 	data.DelState = globalkey.DelStateYes
+	// data.DeletedTime = time.Now()
 	if err := m.UpdateWithVersion(ctx, session, data); err != nil {
 		return errors.Wrapf(xerr.NewErrMsg("删除数据失败"), "UserFollowListModel delete err : %+v", err)
 	}

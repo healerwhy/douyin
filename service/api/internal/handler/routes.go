@@ -19,6 +19,25 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.AuthJWT},
 			[]rest.Route{
 				{
+					Method:  http.MethodPost,
+					Path:    "/favorite/action",
+					Handler: userOpt.FavoriteOptHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/comment/action",
+					Handler: userOpt.CommentOptHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/douyin"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthJWT},
+			[]rest.Route{
+				{
 					Method:  http.MethodGet,
 					Path:    "/favorite/list",
 					Handler: userOpt.GetFavoriteListHandler(serverCtx),

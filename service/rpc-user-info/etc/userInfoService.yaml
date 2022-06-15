@@ -11,12 +11,12 @@ Log:
   Encoding: plain
 
 DB:
-  DataSource: hxxxxxx@tcp(120.79.222.123:3306)/douyin2?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: healer:healer000.@tcp(120.79.222.123:3306)/douyin2?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 
 CacheConf:
-  - Host: 1xxxxxx:6379
+  - Host: 120.79.222.123:6379
     Pass: healer000.
 
 RedisCacheConf:
-  Host:xxxxxx6379
+  Host: 120.79.222.123:6379
   Pass: healer000.

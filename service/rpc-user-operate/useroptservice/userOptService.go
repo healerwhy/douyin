@@ -13,21 +13,20 @@ import (
 )
 
 type (
-	AddFavoriteReq      = userOptPb.AddFavoriteReq
-	AddFavoriteResp     = userOptPb.AddFavoriteResp
-	CancelFavoriteReq   = userOptPb.CancelFavoriteReq
-	CancelFavoriteResp  = userOptPb.CancelFavoriteResp
-	GetUserFavoriteReq  = userOptPb.GetUserFavoriteReq
-	GetUserFavoriteResp = userOptPb.GetUserFavoriteResp
-	GetUserFollowReq    = userOptPb.GetUserFollowReq
-	GetUserFollowResp   = userOptPb.GetUserFollowResp
+	GetUserFavoriteReq       = userOptPb.GetUserFavoriteReq
+	GetUserFavoriteResp      = userOptPb.GetUserFavoriteResp
+	GetUserFollowReq         = userOptPb.GetUserFollowReq
+	GetUserFollowResp        = userOptPb.GetUserFollowResp
+	GetVideoCommentReq       = userOptPb.GetVideoCommentReq
+	GetVideoCommentReqResp   = userOptPb.GetVideoCommentReqResp
+	UpdateFavoriteStatusReq  = userOptPb.UpdateFavoriteStatusReq
+	UpdateFavoriteStatusResp = userOptPb.UpdateFavoriteStatusResp
 
 	UserOptService interface {
 		// -----------------------userFavoriteList-----------------------
-		AddFavorite(ctx context.Context, in *AddFavoriteReq, opts ...grpc.CallOption) (*AddFavoriteResp, error)
-		CancelFavorite(ctx context.Context, in *CancelFavoriteResp, opts ...grpc.CallOption) (*CancelFavoriteResp, error)
 		GetUserFavorite(ctx context.Context, in *GetUserFavoriteReq, opts ...grpc.CallOption) (*GetUserFavoriteResp, error)
 		GetUserFollow(ctx context.Context, in *GetUserFollowReq, opts ...grpc.CallOption) (*GetUserFollowResp, error)
+		UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error)
 	}
 
 	defaultUserOptService struct {
@@ -42,16 +41,6 @@ func NewUserOptService(cli zrpc.Client) UserOptService {
 }
 
 // -----------------------userFavoriteList-----------------------
-func (m *defaultUserOptService) AddFavorite(ctx context.Context, in *AddFavoriteReq, opts ...grpc.CallOption) (*AddFavoriteResp, error) {
-	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
-	return client.AddFavorite(ctx, in, opts...)
-}
-
-func (m *defaultUserOptService) CancelFavorite(ctx context.Context, in *CancelFavoriteResp, opts ...grpc.CallOption) (*CancelFavoriteResp, error) {
-	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
-	return client.CancelFavorite(ctx, in, opts...)
-}
-
 func (m *defaultUserOptService) GetUserFavorite(ctx context.Context, in *GetUserFavoriteReq, opts ...grpc.CallOption) (*GetUserFavoriteResp, error) {
 	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
 	return client.GetUserFavorite(ctx, in, opts...)
@@ -60,4 +49,9 @@ func (m *defaultUserOptService) GetUserFavorite(ctx context.Context, in *GetUser
 func (m *defaultUserOptService) GetUserFollow(ctx context.Context, in *GetUserFollowReq, opts ...grpc.CallOption) (*GetUserFollowResp, error) {
 	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
 	return client.GetUserFollow(ctx, in, opts...)
+}
+
+func (m *defaultUserOptService) UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error) {
+	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
+	return client.UpdateFavoriteStatus(ctx, in, opts...)
 }

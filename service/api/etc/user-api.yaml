@@ -9,7 +9,12 @@ Log:
 
 # 腾讯云
 COSConf:
-  xxxxxx
+  SecretId: AKIDMWR6WgbHhrmRr33oKaaLvGLAk49yXrwm
+  SecretKey: d07yZv1rSovmNjpPlskMjqhNnxsXw5zd
+  MachineId: 1
+  VideoBucket: https://video-1312359504.cos.ap-guangzhou.myqcloud.com
+  CoverBucket: https://cover-1312359504.cos.ap-guangzhou.myqcloud.com
+  CommentBucket: https://comment-1312359504.cos.ap-guangzhou.myqcloud.com
 
 # rpc
 UserInfoService:
@@ -34,7 +39,7 @@ UserOptService:
   NonBlock: true
 
 Cache:
-  - Host: xxxxx:6379
+  - Host: 120.79.222.123:6379
     Pass: healer000.
 
 # kafka

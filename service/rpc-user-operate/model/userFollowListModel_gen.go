@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"douyin/common/globalkey"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -30,6 +31,7 @@ var (
 type (
 	userFollowListModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *UserFollowList) (sql.Result, error)
+		InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*UserFollowList, error)
 		FindOneByUserIdFollowId(ctx context.Context, userId int64, followId int64) (*UserFollowList, error)
 		Update(ctx context.Context, session sqlx.Session, data *UserFollowList) (sql.Result, error)
@@ -60,6 +62,7 @@ func newUserFollowListModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserFo
 }
 
 func (m *defaultUserFollowListModel) Insert(ctx context.Context, session sqlx.Session, data *UserFollowList) (sql.Result, error) {
+	// data.DeletedTime = time.Unix(0,0)
 	douyin2UserFollowListIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserFollowListIdPrefix, data.Id)
 	douyin2UserFollowListUserIdFollowIdKey := fmt.Sprintf("%s%v:%v", cacheDouyin2UserFollowListUserIdFollowIdPrefix, data.UserId, data.FollowId)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -71,6 +74,18 @@ func (m *defaultUserFollowListModel) Insert(ctx context.Context, session sqlx.Se
 	}, douyin2UserFollowListIdKey, douyin2UserFollowListUserIdFollowIdKey)
 }
 
+func (m *defaultUserFollowListModel) InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error) {
+
+	douyin2UserFavoriteListUserIdVideoIdKey := fmt.Sprintf("%s%v:%v", cacheDouyin2UserFavoriteListUserIdVideoIdPrefix, userId, objId)
+
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%d,%d,?) ON DUPLICATE KEY UPDATE %s=?", m.table, field, userId, objId, setStatus)
+		if session != nil {
+			return session.ExecCtx(ctx, query, opt, opt)
+		}
+		return conn.ExecCtx(ctx, query, opt, opt)
+	}, douyin2UserFavoriteListUserIdVideoIdKey)
+}
 func (m *defaultUserFollowListModel) FindOne(ctx context.Context, id int64) (*UserFollowList, error) {
 	douyin2UserFollowListIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserFollowListIdPrefix, id)
 	var resp UserFollowList

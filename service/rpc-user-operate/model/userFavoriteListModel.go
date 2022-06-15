@@ -30,6 +30,8 @@ type (
 		FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, pageSize int64, orderBy string) ([]*UserFavoriteList, error)
 		FindPageListByIdDESC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMinId, pageSize int64) ([]*UserFavoriteList, error)
 		FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*UserFavoriteList, error)
+		// InsertOrUpdate(ctx context.Context, field string, setStatus string, userId, optId , opt int64) (sql.Result, error)
+
 	}
 
 	customUserFavoriteListModel struct {
@@ -46,6 +48,7 @@ func NewUserFavoriteListModel(conn sqlx.SqlConn, c cache.CacheConf) UserFavorite
 
 func (m *defaultUserFavoriteListModel) DeleteSoft(ctx context.Context, session sqlx.Session, data *UserFavoriteList) error {
 	data.DelState = globalkey.DelStateYes
+	// data.DeletedTime = time.Now()
 	if err := m.UpdateWithVersion(ctx, session, data); err != nil {
 		return errors.Wrapf(xerr.NewErrMsg("删除数据失败"), "UserFavoriteListModel delete err : %+v", err)
 	}

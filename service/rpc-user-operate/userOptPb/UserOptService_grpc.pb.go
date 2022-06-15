@@ -23,10 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserOptServiceClient interface {
 	//-----------------------userFavoriteList-----------------------
-	AddFavorite(ctx context.Context, in *AddFavoriteReq, opts ...grpc.CallOption) (*AddFavoriteResp, error)
-	CancelFavorite(ctx context.Context, in *CancelFavoriteResp, opts ...grpc.CallOption) (*CancelFavoriteResp, error)
 	GetUserFavorite(ctx context.Context, in *GetUserFavoriteReq, opts ...grpc.CallOption) (*GetUserFavoriteResp, error)
 	GetUserFollow(ctx context.Context, in *GetUserFollowReq, opts ...grpc.CallOption) (*GetUserFollowResp, error)
+	UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error)
 }
 
 type userOptServiceClient struct {
@@ -35,24 +34,6 @@ type userOptServiceClient struct {
 
 func NewUserOptServiceClient(cc grpc.ClientConnInterface) UserOptServiceClient {
 	return &userOptServiceClient{cc}
-}
-
-func (c *userOptServiceClient) AddFavorite(ctx context.Context, in *AddFavoriteReq, opts ...grpc.CallOption) (*AddFavoriteResp, error) {
-	out := new(AddFavoriteResp)
-	err := c.cc.Invoke(ctx, "/pb.UserOptService/AddFavorite", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userOptServiceClient) CancelFavorite(ctx context.Context, in *CancelFavoriteResp, opts ...grpc.CallOption) (*CancelFavoriteResp, error) {
-	out := new(CancelFavoriteResp)
-	err := c.cc.Invoke(ctx, "/pb.UserOptService/CancelFavorite", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *userOptServiceClient) GetUserFavorite(ctx context.Context, in *GetUserFavoriteReq, opts ...grpc.CallOption) (*GetUserFavoriteResp, error) {
@@ -73,15 +54,23 @@ func (c *userOptServiceClient) GetUserFollow(ctx context.Context, in *GetUserFol
 	return out, nil
 }
 
+func (c *userOptServiceClient) UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error) {
+	out := new(UpdateFavoriteStatusResp)
+	err := c.cc.Invoke(ctx, "/pb.UserOptService/UpdateFavoriteStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserOptServiceServer is the server API for UserOptService service.
 // All implementations must embed UnimplementedUserOptServiceServer
 // for forward compatibility
 type UserOptServiceServer interface {
 	//-----------------------userFavoriteList-----------------------
-	AddFavorite(context.Context, *AddFavoriteReq) (*AddFavoriteResp, error)
-	CancelFavorite(context.Context, *CancelFavoriteResp) (*CancelFavoriteResp, error)
 	GetUserFavorite(context.Context, *GetUserFavoriteReq) (*GetUserFavoriteResp, error)
 	GetUserFollow(context.Context, *GetUserFollowReq) (*GetUserFollowResp, error)
+	UpdateFavoriteStatus(context.Context, *UpdateFavoriteStatusReq) (*UpdateFavoriteStatusResp, error)
 	mustEmbedUnimplementedUserOptServiceServer()
 }
 
@@ -89,17 +78,14 @@ type UserOptServiceServer interface {
 type UnimplementedUserOptServiceServer struct {
 }
 
-func (UnimplementedUserOptServiceServer) AddFavorite(context.Context, *AddFavoriteReq) (*AddFavoriteResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddFavorite not implemented")
-}
-func (UnimplementedUserOptServiceServer) CancelFavorite(context.Context, *CancelFavoriteResp) (*CancelFavoriteResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelFavorite not implemented")
-}
 func (UnimplementedUserOptServiceServer) GetUserFavorite(context.Context, *GetUserFavoriteReq) (*GetUserFavoriteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserFavorite not implemented")
 }
 func (UnimplementedUserOptServiceServer) GetUserFollow(context.Context, *GetUserFollowReq) (*GetUserFollowResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserFollow not implemented")
+}
+func (UnimplementedUserOptServiceServer) UpdateFavoriteStatus(context.Context, *UpdateFavoriteStatusReq) (*UpdateFavoriteStatusResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFavoriteStatus not implemented")
 }
 func (UnimplementedUserOptServiceServer) mustEmbedUnimplementedUserOptServiceServer() {}
 
@@ -112,42 +98,6 @@ type UnsafeUserOptServiceServer interface {
 
 func RegisterUserOptServiceServer(s grpc.ServiceRegistrar, srv UserOptServiceServer) {
 	s.RegisterService(&UserOptService_ServiceDesc, srv)
-}
-
-func _UserOptService_AddFavorite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddFavoriteReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserOptServiceServer).AddFavorite(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.UserOptService/AddFavorite",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserOptServiceServer).AddFavorite(ctx, req.(*AddFavoriteReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserOptService_CancelFavorite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CancelFavoriteResp)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserOptServiceServer).CancelFavorite(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.UserOptService/CancelFavorite",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserOptServiceServer).CancelFavorite(ctx, req.(*CancelFavoriteResp))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _UserOptService_GetUserFavorite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -186,6 +136,24 @@ func _UserOptService_GetUserFollow_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserOptService_UpdateFavoriteStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateFavoriteStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserOptServiceServer).UpdateFavoriteStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserOptService/UpdateFavoriteStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserOptServiceServer).UpdateFavoriteStatus(ctx, req.(*UpdateFavoriteStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserOptService_ServiceDesc is the grpc.ServiceDesc for UserOptService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -194,20 +162,16 @@ var UserOptService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserOptServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddFavorite",
-			Handler:    _UserOptService_AddFavorite_Handler,
-		},
-		{
-			MethodName: "CancelFavorite",
-			Handler:    _UserOptService_CancelFavorite_Handler,
-		},
-		{
 			MethodName: "GetUserFavorite",
 			Handler:    _UserOptService_GetUserFavorite_Handler,
 		},
 		{
 			MethodName: "GetUserFollow",
 			Handler:    _UserOptService_GetUserFollow_Handler,
+		},
+		{
+			MethodName: "UpdateFavoriteStatus",
+			Handler:    _UserOptService_UpdateFavoriteStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
