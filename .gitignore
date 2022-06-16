@@ -18,5 +18,5 @@
 */etc
 */GenModel                                                                                                                                                                               
 *.sh
-
+*.yaml
 .idea/

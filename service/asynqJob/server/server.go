@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"douyin/service/asynqTask/server/internal/config"
-	"douyin/service/asynqTask/server/internal/logic"
-	"douyin/service/asynqTask/server/internal/svc"
+	"douyin/service/asynqJob/server/internal/config"
+	"douyin/service/asynqJob/server/internal/logic"
+	"douyin/service/asynqJob/server/internal/svc"
 	"flag"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"

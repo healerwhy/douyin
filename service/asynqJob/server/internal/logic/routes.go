@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
-	"douyin/service/asynqTask/server/internal/logic/tasks"
-	"douyin/service/asynqTask/server/internal/svc"
-	"douyin/service/asynqTask/server/jobtype"
+	"douyin/service/asynqJob/server/internal/logic/jobs"
+	"douyin/service/asynqJob/server/internal/svc"
+	"douyin/service/asynqJob/server/jobtype"
 	"github.com/hibiken/asynq"
 )
 
@@ -26,9 +26,9 @@ func (l *CronJob) Register() *asynq.ServeMux {
 	mux := asynq.NewServeMux()
 
 	//client-scheduler server
-	mux.Handle(jobtype.ScheduleGetUserFavoriteStatus, tasks.NewGetUserFavoriteStatusHandler(l.svcCtx))
-	mux.Handle(jobtype.ScheduleGetUserFollowStatus, tasks.NewGetUserFollowStatusHandler(l.svcCtx))
-	mux.Handle(jobtype.ScheduleGetUserComment, tasks.NewGetUserCommentHandler(l.svcCtx))
+	mux.Handle(jobtype.ScheduleGetUserFavoriteStatus, jobs.NewGetUserFavoriteStatusHandler(l.svcCtx))
+	mux.Handle(jobtype.ScheduleGetUserFollowStatus, jobs.NewGetUserFollowStatusHandler(l.svcCtx))
+	mux.Handle(jobtype.ScheduleGetUserComment, jobs.NewGetUserCommentHandler(l.svcCtx))
 
 	return mux
 }

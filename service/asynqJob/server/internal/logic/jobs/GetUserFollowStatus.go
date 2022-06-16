@@ -1,8 +1,8 @@
-package tasks
+package jobs
 
 import (
 	"context"
-	"douyin/service/asynqTask/server/internal/svc"
+	"douyin/service/asynqJob/server/internal/svc"
 	"fmt"
 	"github.com/hibiken/asynq"
 )

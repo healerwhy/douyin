@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"douyin/service/asynqTask/server/internal/config"
+	"douyin/service/asynqJob/server/internal/config"
 	"github.com/hibiken/asynq"
 )
 

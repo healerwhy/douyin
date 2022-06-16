@@ -1,8 +1,8 @@
-package tasks
+package jobs
 
 import (
 	"context"
-	"douyin/service/asynqTask/server/internal/svc"
+	"douyin/service/asynqJob/server/internal/svc"
 	"fmt"
 	"github.com/hibiken/asynq"
 )
@@ -21,7 +21,7 @@ func NewGetUserFavoriteStatusHandler(svcCtx *svc.ServiceContext) *GetUserFavorit
 //  every one minute exec : if return err != nil , asynq will retry
 func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq.Task) error {
 
-	fmt.Printf("shcedule server demo -----> every one minute exec \n")
+	fmt.Printf("shcedule server demo -----> NewGetUserFavoriteStatusHandler \n")
 
 	return nil
 }
