@@ -12,7 +12,7 @@ func (l *MqueueScheduler) GetUserFavoriteStatusScheduler() {
 
 	task := asynq.NewTask(jobtype.ScheduleGetUserFavoriteStatus, nil)
 	// every one minute exec
-	entryID, err := l.svcCtx.Scheduler.Register("@every 5s", task)
+	entryID, err := l.svcCtx.Scheduler.Register("@every 20s", task)
 	if err != nil {
 		logx.WithContext(l.ctx).Errorf("!!!MqueueSchedulerErr!!! ====> 【ScheduleGetUserFavoriteStatus】 registered  err:%+v , task:%+v", err, task)
 	}

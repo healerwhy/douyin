@@ -48,17 +48,3 @@ func (l *UserFollowOpt) execService(message messageTypes.UserFollowOptMessage) e
 
 	return nil
 }
-
-//Get order status based on payment status.
-func (l *UserFollowOpt) getUserOpt(Status int64) int64 {
-
-	switch Status {
-	case 1:
-		return 1111
-	case 2:
-		return 2222
-	default:
-		return -99
-	}
-
-}

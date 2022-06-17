@@ -27,6 +27,10 @@ func NewUpdateFavoriteStatusLogic(ctx context.Context, svcCtx *svc.ServiceContex
 func (l *UpdateFavoriteStatusLogic) UpdateFavoriteStatus(in *userOptPb.UpdateFavoriteStatusReq) (*userOptPb.UpdateFavoriteStatusResp, error) {
 	tmp := []string{"user_id", "video_id", "is_favorite"}
 	field := strings.Join(tmp, ",")
-	l.svcCtx.UserFavorite.InsertOrUpdate(l.ctx, nil, field, "is_favorite", in.UserId, in.VideoId, in.ActionType)
+	_, err := l.svcCtx.UserFavorite.InsertOrUpdate(l.ctx, nil, field, "is_favorite", in.UserId, in.VideoId, in.ActionType)
+	if err != nil {
+		logx.Errorf("UpdateFavoriteStatusLogic------->UpdateFavoriteStatus err : %v\n", err)
+		return nil, nil
+	}
 	return &userOptPb.UpdateFavoriteStatusResp{}, nil
 }

@@ -4,18 +4,18 @@ import (
 	"context"
 	myToken "douyin/common/help/token"
 	"douyin/common/xerr"
+	"douyin/service/api/internal/svc"
 	"douyin/service/rpc-user-info/userInfoPb"
+	"douyin/service/rpc-user-operate/userOptPb"
 	"douyin/service/rpc-user-operate/useroptservice"
 	"douyin/service/rpc-video-service/videoSvcPb"
-	"fmt"
 	"github.com/jinzhu/copier"
+	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/mr"
 	"sort"
 	"time"
 
-	"douyin/service/api/internal/svc"
 	"douyin/service/api/internal/types"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type FeedVideoListLogic struct {
@@ -32,6 +32,24 @@ func NewFeedVideoListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Fee
 	}
 }
 
+func getAuthIdsAndVideoIds(VideoPubList []*videoSvcPb.Video) (authIds []int64, videoIds []int64) {
+	// 把视频里的所用用户的信息找出来 并去重
+	authIdsTemp := make(map[int64]interface{}, len(VideoPubList))
+	authIds = make([]int64, 0, len(VideoPubList))
+	// 构建videoIds  查询当前id对这些视频是否点赞
+	videoIds = make([]int64, 0, len(VideoPubList))
+	for _, v := range VideoPubList {
+		if _, ok := authIdsTemp[v.AuthId]; !ok {
+			authIdsTemp[v.AuthId] = nil
+			authIds = append(authIds, v.AuthId)
+		}
+		videoIds = append(videoIds, v.Id)
+	}
+	sort.Slice(videoIds, func(i, j int) bool { return videoIds[i] < videoIds[j] }) // 升序排列
+	sort.Slice(authIds, func(i, j int) bool { return authIds[i] < authIds[j] })    // 升序排列
+	return authIds, videoIds
+}
+
 func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *types.FeedVideoListRes, err error) {
 	// 查看LastTime是否存在 不存在就直接从video里的 拉取最多30条视频
 	var LastTime int64
@@ -40,14 +58,16 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 	} else {
 		LastTime = time.Now().Unix()
 	}
+
 	videos, err := l.svcCtx.VideoSvcRpcClient.FeedVideos(l.ctx, &videoSvcPb.FeedVideosReq{
 		LastTime: LastTime,
 	})
 	if err != nil {
+		logx.Errorf("get video list fail %s", err.Error())
 		return &types.FeedVideoListRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "get video list fail " + err.Error(),
+				Msg:  "get video list fail",
 			},
 		}, nil
 	}
@@ -58,18 +78,7 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 	var videoList []*types.PubVideo // 最终返回的视频列表
 
 	if len(videos.VideoPubList) > 0 {
-		var authIdsTemp map[int64]interface{}
-		var authIds []int64
-
-		// 把视频里的所用用户的信息找出来 并去重
-		authIdsTemp = make(map[int64]interface{}, len(videos.VideoPubList))
-		for _, v := range videos.VideoPubList {
-			authIdsTemp[v.AuthId] = nil
-		}
-		authIds = make([]int64, 0, len(authIdsTemp))
-		for k := range authIdsTemp {
-			authIds = append(authIds, k)
-		}
+		authIds, videoIds := getAuthIdsAndVideoIds(videos.VideoPubList)
 
 		// 查询所有视频的的作者信息
 		authsInfo, err := l.svcCtx.UserInfoRpcClient.AuthsInfo(l.ctx, &userInfoPb.AuthsInfoReq{ // 返回作者信息 按照作者id升序排列
@@ -84,53 +93,55 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 			}, nil
 		}
 
-		var userFavoriteList *useroptservice.GetUserFavoriteResp // 该用户对视频的点赞状态
-		var userFollowList *useroptservice.GetUserFollowResp     // 该用户对作者的关注状态
-
 		if req.Token != "" { // 因为带有token是登录状态所以有点赞状态以及关注状态
-
-			// 构建videoIds  查询当前id对这些视频是否点赞
-			var videoIds []int64
-			videoIds = make([]int64, 0, len(videos.VideoPubList))
-			for _, v := range videos.VideoPubList {
-				videoIds = append(videoIds, v.Id)
-			}
-			sort.Slice(videoIds, func(i, j int) bool { return videoIds[i] < videoIds[j] }) // 升序排列
-
 			userId := l.ctx.Value(myToken.CurrentUserId("LoginUserId")).(int64)
-			userFavoriteList, err = l.svcCtx.UserOptSvcRpcClient.GetUserFavorite(l.ctx, &useroptservice.GetUserFavoriteReq{
-				UserId:   userId,
-				VideoIds: videoIds,
+
+			var userFavoriteList *userOptPb.GetUserFavoriteResp
+			var userFollowList *userOptPb.GetUserFollowResp
+			var resp *types.FeedVideoListRes
+			err := mr.Finish(func() error {
+				userFavoriteList, err = l.svcCtx.UserOptSvcRpcClient.GetUserFavorite(l.ctx, &useroptservice.GetUserFavoriteReq{
+					UserId:   userId,
+					VideoIds: videoIds,
+				})
+
+				if err != nil {
+					resp = &types.FeedVideoListRes{
+						Status: types.Status{
+							Code: xerr.ERR,
+							Msg:  "get user favorite video relation fail " + err.Error(),
+						},
+					}
+					return err
+				}
+				return nil
+
+			}, func() error {
+				// 构建following map 查询对这些作者是否关注
+				userFollowList, err = l.svcCtx.UserOptSvcRpcClient.GetUserFollow(l.ctx, &useroptservice.GetUserFollowReq{
+					UserId:  userId,
+					AuthIds: authIds,
+				})
+				if err != nil {
+					resp = &types.FeedVideoListRes{
+						Status: types.Status{
+							Code: xerr.ERR,
+							Msg:  "get user follow author relation fail " + err.Error(),
+						},
+					}
+					return err
+				}
+				return nil
 			})
 			if err != nil {
-				return &types.FeedVideoListRes{
-					Status: types.Status{
-						Code: xerr.ERR,
-						Msg:  "get user favorite video relation fail" + err.Error(),
-					},
-				}, nil
+				return resp, nil
 			}
 
-			// 构建following map 查询对这些作者是否关注
-			userFollowList, err = l.svcCtx.UserOptSvcRpcClient.GetUserFollow(l.ctx, &useroptservice.GetUserFollowReq{
-				UserId:  userId,
-				AuthIds: authIds,
-			})
-			/*
-				Author        Author `json:"author"`
-				IsFavorite    bool   `json:"is_favorite"`
-
-				IsFavorite    bool   `protobuf:"varint,7,opt,name=IsFavorite,proto3" json:"IsFavorite,omitempty"`
-				AuthId        int64  `protobuf:"varint,8,opt,name=AuthId,proto3" json:"AuthId,omitempty"`
-
-				IsFollow      bool   `json:"is_follow"
-				IsFollowing   bool
-			*/
 			for _, v := range videos.VideoPubList {
 				var video types.PubVideo
 				_ = copier.Copy(&video, v)
 				_ = copier.Copy(&video.Author, authsInfo.Auths[v.AuthId])
-				fmt.Printf("%+v\n", video.Author)
+
 				// 用户对该视频是否点赞
 				video.IsFavorite = userFavoriteList.UserFavoriteList[v.Id]
 				// 用户对该视频的作者是否关注
@@ -143,7 +154,8 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 				var video types.PubVideo
 				_ = copier.Copy(&video, v)
 				_ = copier.Copy(&video.Author, authsInfo.Auths[v.AuthId])
-				fmt.Printf("%+v\n", video.Author)
+
+				logx.Errorf("video %+v", video)
 				video.IsFavorite = false
 				video.Author.IsFollow = false
 

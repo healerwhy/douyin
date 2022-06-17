@@ -2,13 +2,15 @@ package kq
 
 import (
 	"context"
+	"douyin/common/globalkey"
 	"douyin/common/messageTypes"
 	"douyin/service/mq/internal/svc"
 	"douyin/service/rpc-user-operate/userOptPb"
 	"encoding/json"
+	"fmt"
 	"github.com/jinzhu/copier"
-	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 /*
@@ -36,41 +38,30 @@ func (l *UserFavoriteOpt) Consume(_, val string) error {
 
 	if err := l.execService(message); err != nil {
 		logx.WithContext(l.ctx).Error("UserFavoriteOptMessage->execService  err : %v , val : %s , message:%+v", err, val, message)
+		logx.Errorf("UserFavoriteOptMessage->execService  err : %v , val : %s , message:%+v", err, val, message)
 		return err
 	}
 	return nil
-
 }
 
 // 处理逻辑
 func (l *UserFavoriteOpt) execService(message messageTypes.UserFavoriteOptMessage) error {
+
 	logx.Infof("UserFavoriteOptMessage message : %+v\n", message)
 
-	status := l.getUserOpt(message.ActionType)
-	if status == messageTypes.ActionErr {
-		return errors.New("unknown action type")
-	}
 	var req userOptPb.UpdateFavoriteStatusReq
 	_ = copier.Copy(&req, &message)
-	req.ActionType = status
-	_, err := l.svcCtx.UserOptSvcRpcClient.UpdateFavoriteStatus(l.ctx, &req)
-	if err != nil {
+
+	// 构造redis的数据
+	dataKey := fmt.Sprintf(globalkey.FavoriteTpl, message.VideoId)
+	favoriteSetVal := fmt.Sprintf(globalkey.FavoriteTpl, message.VideoId)
+	dataVal := fmt.Sprintf(globalkey.DataValTpl, message.UserId, message.ActionType)
+
+	_, err := l.svcCtx.RedisCache.EvalShaCtx(l.ctx, l.svcCtx.ScriptTag, []string{globalkey.FavoriteSetKey, dataKey}, []string{favoriteSetVal, dataVal})
+	if err != redis.Nil {
+		logx.Errorf("script exec err : %v", err)
 		return err
 	}
+
 	return nil
-
-}
-
-//Get order status based on payment status.
-func (l *UserFavoriteOpt) getUserOpt(Status int64) int64 {
-
-	switch Status { // 1:add, 2:cancel 这样就可以扩展状态 而不用if 吧啦吧啦 not to be shit
-	case messageTypes.ActionADD: // 那么让is_favorite = 0
-		return 1
-	case messageTypes.ActionCancel: //
-		return 0
-	default:
-		return messageTypes.ActionErr
-	}
-
 }
