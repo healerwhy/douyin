@@ -6,31 +6,41 @@ import "video.api"
 type FavoriteOptReq {
 	Token      string `form:"token"`
 	VideoId    int64  `form:"video_id"`
-	ActionType int32  `form:"action_type"`
+	ActionType int64  `form:"action_type"`
 }
 
 type FavoriteOptRes {
 	Status
 }
 
+type FollowOptReq {
+	Token      string `form:"token"`
+	FollowId   int64  `form:"to_user_id"`
+	ActionType int64  `form:"action_type"`
+}
+
+type FollowOptRes {
+	Status
+}
+
 type CommentOptReq {
-	IdWithTokenReq
-	VideoId     string `form:"video_id"`
-	ActionType  int32  `form:"action_type"`
-	CommentText string `form:"comment_text"`
-	CommentId   int64  `form:"comment_id"`
+	Token       string `form:"token"`
+	VideoId     int64  `form:"video_id"`
+	ActionType  int64  `form:"action_type"`
+	CommentText string `form:"comment_text,omitempty, optional"`
+	CommentId   int64  `form:"comment_id,omitempty, optional"`
 }
 
 type Comment {
-	Comment_id  int64  `json:"id"`
-	User        Author `json:"user"`
-	Content     string `json:"content"`
-	Create_time string `json:"create_date"`
+	CommentId  int64  `json:"id" copyier:"id"`
+	User       Author `json:"user"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_date"`
 }
 
 type CommentOptRes {
 	Status
-	Comment Comment `json:"comment,omitempty"`
+	Comment *Comment `json:"comment,omitempty"`
 }
 
 @server(
@@ -47,6 +57,10 @@ service user-api {
 	@doc "用户评论"
 	@handler CommentOpt
 	post /comment/action (CommentOptReq) returns (CommentOptRes)
+	
+	@doc "用户关注"
+	@handler FollowOpt
+	post /relation/action (FollowOptReq) returns (FollowOptRes)
 }
 
 type FavoriteListReq {
@@ -58,8 +72,27 @@ type FavoriteListRes {
 	FavoriteList []*PubVideo `json:"video_list,omitempty"`
 }
 
-type CommentListReq {
+type FollowListReq {
 	IdWithTokenReq
+}
+
+type FollowListRes {
+	Status
+	UserFollowlist []*Author `json:"user_list,omitempty"`
+}
+
+type FollowerListReq {
+	IdWithTokenReq
+}
+
+type FollowerListRes {
+	Status
+	UserFollowerlist []*Author `json:"user_list,omitempty"`
+}
+
+type CommentListReq {
+	Token   string `form:"token"`
+	VideoId int64  `form:"video_id"`
 }
 
 type CommentListRes {
@@ -81,4 +114,11 @@ service user-api {
 	@handler GetCommentList
 	get /comment/list (CommentListReq) returns (CommentListRes)
 	
+	@doc "用户关注列表"
+	@handler GetFollowList
+	get /relation/follow/list (FollowListReq) returns (FollowListRes)
+	
+	@doc "用户粉丝列表"
+	@handler GetFollowerList
+	get /relation/follower/list (FollowerListReq) returns (FollowerListRes)
 }

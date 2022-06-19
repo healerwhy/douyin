@@ -4,31 +4,41 @@ package types
 type FavoriteOptReq struct {
 	Token      string `form:"token"`
 	VideoId    int64  `form:"video_id"`
-	ActionType int32  `form:"action_type"`
+	ActionType int64  `form:"action_type"`
 }
 
 type FavoriteOptRes struct {
 	Status
 }
 
+type FollowOptReq struct {
+	Token      string `form:"token"`
+	FollowId   int64  `form:"to_user_id"`
+	ActionType int64  `form:"action_type"`
+}
+
+type FollowOptRes struct {
+	Status
+}
+
 type CommentOptReq struct {
-	IdWithTokenReq
-	VideoId     string `form:"video_id"`
-	ActionType  int32  `form:"action_type"`
-	CommentText string `form:"comment_text"`
-	CommentId   int64  `form:"comment_id"`
+	Token       string `form:"token"`
+	VideoId     int64  `form:"video_id"`
+	ActionType  int64  `form:"action_type"`
+	CommentText string `form:"comment_text,omitempty, optional"`
+	CommentId   int64  `form:"comment_id,omitempty, optional"`
 }
 
 type Comment struct {
-	Comment_id  int64  `json:"id"`
-	User        Author `json:"user"`
-	Content     string `json:"content"`
-	Create_time string `json:"create_date"`
+	CommentId  int64  `json:"id" copyier:"id"`
+	User       Author `json:"user"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_date"`
 }
 
 type CommentOptRes struct {
 	Status
-	Comment Comment `json:"comment,omitempty"`
+	Comment *Comment `json:"comment,omitempty"`
 }
 
 type FavoriteListReq struct {
@@ -40,8 +50,27 @@ type FavoriteListRes struct {
 	FavoriteList []*PubVideo `json:"video_list,omitempty"`
 }
 
-type CommentListReq struct {
+type FollowListReq struct {
 	IdWithTokenReq
+}
+
+type FollowListRes struct {
+	Status
+	UserFollowlist []*Author `json:"user_list,omitempty"`
+}
+
+type FollowerListReq struct {
+	IdWithTokenReq
+}
+
+type FollowerListRes struct {
+	Status
+	UserFollowerlist []*Author `json:"user_list,omitempty"`
+}
+
+type CommentListReq struct {
+	Token   string `form:"token"`
+	VideoId int64  `form:"video_id"`
 }
 
 type CommentListRes struct {

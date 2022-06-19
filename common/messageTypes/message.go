@@ -13,14 +13,19 @@ type UserFavoriteOptMessage struct {
 	UserId     int64 `json:"user_id"`
 }
 
-// UserCommentOptMessage 评论 / 删除评论
-type UserCommentOptMessage struct {
-	CommentText string `json:"comment_text"`
-	ActionType  int64  `json:"action_type"`
-	VideoId     int64  `json:"video_id"`
-	CommentId   int64  `form:"comment_id"`
-}
-
 // UserFollowOptMessage 关注 / 取消关注
 type UserFollowOptMessage struct {
+	ActionType int64 `json:"action_type"`
+	FollowId   int64 `json:"follow_id"`
+	UserId     int64 `json:"user_id"`
+}
+
+// UserCommentOptMessage 评论 / 删除评论
+type UserCommentOptMessage struct {
+	VideoId     int64  `json:"video_id"`
+	CommentId   int64  `json:"comment_id"`
+	UserId      int64  `json:"user_id"`
+	ActionType  int64  `json:"action_type"`
+	CommentText string `json:"comment_text,omitempty"`
+	CreateDate  string `json:"create_date,omitempty"`
 }

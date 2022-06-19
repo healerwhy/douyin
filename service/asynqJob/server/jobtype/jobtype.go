@@ -4,5 +4,3 @@ package jobtype
 const ScheduleGetUserFavoriteStatus = "schedule:get_user_favorite_status"
 
 const ScheduleGetUserFollowStatus = "schedule:get_user_follow_status"
-
-const ScheduleGetUserComment = "schedule:get_user_comment"

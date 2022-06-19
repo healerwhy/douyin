@@ -35,6 +35,7 @@ type (
 		FindOne(ctx context.Context, id int64) (*UserFollowList, error)
 		FindOneByUserIdFollowId(ctx context.Context, userId int64, followId int64) (*UserFollowList, error)
 		Update(ctx context.Context, session sqlx.Session, data *UserFollowList) (sql.Result, error)
+		UpdateStatus(ctx context.Context, session sqlx.Session, key string, idx string, actionType, id int64) (sql.Result, error)
 		UpdateWithVersion(ctx context.Context, session sqlx.Session, data *UserFollowList) error
 		Delete(ctx context.Context, session sqlx.Session, id int64) error
 	}
@@ -75,16 +76,13 @@ func (m *defaultUserFollowListModel) Insert(ctx context.Context, session sqlx.Se
 }
 
 func (m *defaultUserFollowListModel) InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error) {
-
-	douyin2UserFavoriteListUserIdVideoIdKey := fmt.Sprintf("%s%v:%v", cacheDouyin2UserFavoriteListUserIdVideoIdPrefix, userId, objId)
-
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%d,%d,?) ON DUPLICATE KEY UPDATE %s=?", m.table, field, userId, objId, setStatus)
 		if session != nil {
 			return session.ExecCtx(ctx, query, opt, opt)
 		}
 		return conn.ExecCtx(ctx, query, opt, opt)
-	}, douyin2UserFavoriteListUserIdVideoIdKey)
+	})
 }
 func (m *defaultUserFollowListModel) FindOne(ctx context.Context, id int64) (*UserFollowList, error) {
 	douyin2UserFollowListIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserFollowListIdPrefix, id)
@@ -133,6 +131,17 @@ func (m *defaultUserFollowListModel) Update(ctx context.Context, session sqlx.Se
 		}
 		return conn.ExecCtx(ctx, query, data.UserId, data.FollowId, data.IsFollow, data.DelState, data.Id)
 	}, douyin2UserFollowListIdKey, douyin2UserFollowListUserIdFollowIdKey)
+}
+
+func (m *defaultUserFollowListModel) UpdateStatus(ctx context.Context, session sqlx.Session, key string, idx string, actionType, id int64) (sql.Result, error) {
+
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("UPDATE %s SET %s=%s+? WHERE %s=?", m.table, key, key, idx)
+		if session != nil {
+			return session.ExecCtx(ctx, query, actionType, id)
+		}
+		return conn.ExecCtx(ctx, query, actionType, id)
+	})
 }
 
 func (m *defaultUserFollowListModel) UpdateWithVersion(ctx context.Context, session sqlx.Session, data *UserFollowList) error {

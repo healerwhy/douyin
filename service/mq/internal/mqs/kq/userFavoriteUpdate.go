@@ -55,9 +55,10 @@ func (l *UserFavoriteOpt) execService(message messageTypes.UserFavoriteOptMessag
 	// 构造redis的数据
 	dataKey := fmt.Sprintf(globalkey.FavoriteTpl, message.VideoId)
 	favoriteSetVal := fmt.Sprintf(globalkey.FavoriteTpl, message.VideoId)
-	dataVal := fmt.Sprintf(globalkey.DataValTpl, message.UserId, message.ActionType)
+	dataVal := fmt.Sprintf(globalkey.ExistDataValTpl, message.UserId, message.ActionType)
 
-	_, err := l.svcCtx.RedisCache.EvalShaCtx(l.ctx, l.svcCtx.ScriptTag, []string{globalkey.FavoriteSetKey, dataKey}, []string{favoriteSetVal, dataVal})
+	// 消息取出来之后无非是点赞或者取消点赞 0，1，那么打到redis也是0，1
+	_, err := l.svcCtx.RedisCache.EvalShaCtx(l.ctx, l.svcCtx.ScriptADD, []string{globalkey.FavoriteSetKey, dataKey}, []string{favoriteSetVal, dataVal})
 	if err != redis.Nil {
 		logx.Errorf("script exec err : %v", err)
 		return err

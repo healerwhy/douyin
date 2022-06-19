@@ -28,6 +28,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/comment/action",
 					Handler: userOpt.CommentOptHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/relation/action",
+					Handler: userOpt.FollowOptHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/douyin"),
@@ -46,6 +51,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/comment/list",
 					Handler: userOpt.GetCommentListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/relation/follow/list",
+					Handler: userOpt.GetFollowListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/relation/follower/list",
+					Handler: userOpt.GetFollowerListHandler(serverCtx),
 				},
 			}...,
 		),

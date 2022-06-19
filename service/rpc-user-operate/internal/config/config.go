@@ -11,4 +11,10 @@ type Config struct {
 		DataSource string
 	}
 	CacheConf cache.CacheConf
+
+	COSConf struct {
+		SecretId      string
+		SecretKey     string
+		CommentBucket string
+	}
 }

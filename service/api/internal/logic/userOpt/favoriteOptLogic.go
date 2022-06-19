@@ -28,31 +28,57 @@ func NewFavoriteOptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Favor
 }
 
 func (l *FavoriteOptLogic) FavoriteOpt(req *types.FavoriteOptReq) (resp *types.FavoriteOptRes, err error) {
+
 	var msgTemp messageTypes.UserFavoriteOptMessage
 	_ = copier.Copy(&msgTemp, req)
-	msgTemp.UserId = l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
 
-	logx.Errorf("FavoriteOpt msgTemp : %+v", msgTemp)
+	// 前端传入的是1，2表示点赞与取消点赞，入口这里就将它转换成1，0表示点赞与取消点赞
+	msgTemp.ActionType = l.getActionType(req.ActionType)
+
+	if msgTemp.ActionType == -99 {
+		return &types.FavoriteOptRes{
+			Status: types.Status{
+				Code: xerr.ERR,
+				Msg:  "operate error",
+			},
+		}, nil
+	}
+	msgTemp.UserId = l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
+	logx.Infof("FavoriteOpt msgTemp : %+v", msgTemp)
 
 	// 序列化
 	msg, err := json.Marshal(msgTemp)
 	if err != nil {
 		return nil, errors.Wrapf(err, " json.Marshal err")
 	}
+
 	// 向消息队列发送消息
 	err = l.svcCtx.FavoriteOptMsgProducer.Push(string(msg))
 	if err != nil {
 		return &types.FavoriteOptRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "send message to favoriteOptMsgConsumer err",
+				Msg:  "send message to FavoriteOptMsgConsumer err",
 			},
 		}, nil
 	}
+
 	return &types.FavoriteOptRes{
 		Status: types.Status{
 			Code: xerr.OK,
 			Msg:  "operate success",
 		},
 	}, nil
+}
+
+func (l *FavoriteOptLogic) getActionType(actionType int64) int64 {
+
+	switch actionType { // 方便扩展
+	case messageTypes.ActionADD:
+		return 1
+	case messageTypes.ActionCancel:
+		return 0
+	default:
+		return -99
+	}
 }

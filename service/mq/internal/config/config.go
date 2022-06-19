@@ -18,6 +18,13 @@ type Config struct {
 
 	// 操作rpc
 	UserOptServiceConf zrpc.RpcClientConf
+	VideoService       zrpc.RpcClientConf
 
 	RedisCacheConf redis.RedisConf
+
+	COSConf struct {
+		SecretId      string
+		SecretKey     string
+		CommentBucket string
+	}
 }

@@ -31,10 +31,10 @@ func NewPublishVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext, r *ht
 func (l *PublishVideoLogic) PublishVideo(req *types.PubVideoReq) (resp *types.PubVideoRes, err error) {
 	// 从前端获取视频
 	file, _, err := l.r.FormFile("data")
-	upLoder := new(cos.Uploader)
+	upLoder := new(cos.UploaderVideo)
 	authId := l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
 
-	key, err := upLoder.Upload(l.ctx, file,
+	key, err := upLoder.UploadVideo(l.ctx, file,
 		authId, l.svcCtx.Config.COSConf.MachineId,
 		l.svcCtx.Config.COSConf.VideoBucket, l.svcCtx.Config.COSConf.CoverBucket,
 		l.svcCtx.Config.COSConf.SecretId, l.svcCtx.Config.COSConf.SecretKey)

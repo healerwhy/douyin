@@ -28,7 +28,6 @@ func (l *CronJob) Register() *asynq.ServeMux {
 	// handle
 	mux.Handle(jobtype.ScheduleGetUserFavoriteStatus, jobs.NewGetUserFavoriteStatusHandler(l.svcCtx))
 	mux.Handle(jobtype.ScheduleGetUserFollowStatus, jobs.NewGetUserFollowStatusHandler(l.svcCtx))
-	mux.Handle(jobtype.ScheduleGetUserComment, jobs.NewGetUserCommentHandler(l.svcCtx))
 
 	return mux
 }

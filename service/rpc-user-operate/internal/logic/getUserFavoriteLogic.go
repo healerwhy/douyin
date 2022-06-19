@@ -29,9 +29,9 @@ func NewGetUserFavoriteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 func (l *GetUserFavoriteLogic) GetUserFavorite(in *userOptPb.GetUserFavoriteReq) (*userOptPb.GetUserFavoriteResp, error) {
 
 	if in.VideoIds != nil { // 给 feed 接口使用 查看用户对以下videoids的点赞状态
-		whereBuilder := l.svcCtx.UserFavorite.RowBuilder().Where(squirrel.Eq{"user_id": in.UserId, "video_id": in.VideoIds, "is_favorite": 0})
+		whereBuilder := l.svcCtx.UserFavoriteModel.RowBuilder().Where(squirrel.Eq{"user_id": in.UserId, "video_id": in.VideoIds}).Where(squirrel.NotEq{"is_favorite": 0})
 
-		res, err := l.svcCtx.UserFavorite.FindAll(l.ctx, whereBuilder, "")
+		res, err := l.svcCtx.UserFavoriteModel.FindAll(l.ctx, whereBuilder, "")
 		if err != nil {
 			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFavorite  err , id:%d , err:%v", in.UserId, err)
 		}
@@ -49,9 +49,9 @@ func (l *GetUserFavoriteLogic) GetUserFavorite(in *userOptPb.GetUserFavoriteReq)
 			UserFavoriteList: respUserFavoriteList,
 		}, nil
 	} else { // 给拉取点赞列表使用 查询的是用户对哪些视频进行了点赞
-		whereBuilder := l.svcCtx.UserFavorite.RowBuilder().Where("user_id = ? and is_favorite != 0 ", in.UserId)
+		whereBuilder := l.svcCtx.UserFavoriteModel.RowBuilder().Where("user_id = ? and is_favorite != 0 ", in.UserId)
 
-		res, err := l.svcCtx.UserFavorite.FindAll(l.ctx, whereBuilder, "user_id ASC")
+		res, err := l.svcCtx.UserFavoriteModel.FindAll(l.ctx, whereBuilder, "user_id ASC")
 		if err != nil {
 			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFavorite  err , id:%d , err:%v", in.UserId, err)
 		}

@@ -37,3 +37,23 @@ func (s *UserOptServiceServer) UpdateFavoriteStatus(ctx context.Context, in *use
 	l := logic.NewUpdateFavoriteStatusLogic(ctx, s.svcCtx)
 	return l.UpdateFavoriteStatus(in)
 }
+
+func (s *UserOptServiceServer) UpdateFollowStatus(ctx context.Context, in *userOptPb.UpdateFollowStatusReq) (*userOptPb.UpdateFollowStatusResp, error) {
+	l := logic.NewUpdateFollowStatusLogic(ctx, s.svcCtx)
+	return l.UpdateFollowStatus(in)
+}
+
+func (s *UserOptServiceServer) UpdateCommentStatus(ctx context.Context, in *userOptPb.UpdateCommentStatusReq) (*userOptPb.UpdateCommentStatusResp, error) {
+	l := logic.NewUpdateCommentStatusLogic(ctx, s.svcCtx)
+	return l.UpdateCommentStatus(in)
+}
+
+func (s *UserOptServiceServer) GetVideoComment(ctx context.Context, in *userOptPb.GetVideoCommentReq) (*userOptPb.GetVideoCommentReqResp, error) {
+	l := logic.NewGetVideoCommentLogic(ctx, s.svcCtx)
+	return l.GetVideoComment(in)
+}
+
+func (s *UserOptServiceServer) GetUserFollower(ctx context.Context, in *userOptPb.GetUserFollowerReq) (*userOptPb.GetUserFollowerResp, error) {
+	l := logic.NewGetUserFollowerLogic(ctx, s.svcCtx)
+	return l.GetUserFollower(in)
+}

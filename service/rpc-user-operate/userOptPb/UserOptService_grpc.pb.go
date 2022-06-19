@@ -26,6 +26,10 @@ type UserOptServiceClient interface {
 	GetUserFavorite(ctx context.Context, in *GetUserFavoriteReq, opts ...grpc.CallOption) (*GetUserFavoriteResp, error)
 	GetUserFollow(ctx context.Context, in *GetUserFollowReq, opts ...grpc.CallOption) (*GetUserFollowResp, error)
 	UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error)
+	UpdateFollowStatus(ctx context.Context, in *UpdateFollowStatusReq, opts ...grpc.CallOption) (*UpdateFollowStatusResp, error)
+	UpdateCommentStatus(ctx context.Context, in *UpdateCommentStatusReq, opts ...grpc.CallOption) (*UpdateCommentStatusResp, error)
+	GetVideoComment(ctx context.Context, in *GetVideoCommentReq, opts ...grpc.CallOption) (*GetVideoCommentReqResp, error)
+	GetUserFollower(ctx context.Context, in *GetUserFollowerReq, opts ...grpc.CallOption) (*GetUserFollowerResp, error)
 }
 
 type userOptServiceClient struct {
@@ -63,6 +67,42 @@ func (c *userOptServiceClient) UpdateFavoriteStatus(ctx context.Context, in *Upd
 	return out, nil
 }
 
+func (c *userOptServiceClient) UpdateFollowStatus(ctx context.Context, in *UpdateFollowStatusReq, opts ...grpc.CallOption) (*UpdateFollowStatusResp, error) {
+	out := new(UpdateFollowStatusResp)
+	err := c.cc.Invoke(ctx, "/pb.UserOptService/UpdateFollowStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userOptServiceClient) UpdateCommentStatus(ctx context.Context, in *UpdateCommentStatusReq, opts ...grpc.CallOption) (*UpdateCommentStatusResp, error) {
+	out := new(UpdateCommentStatusResp)
+	err := c.cc.Invoke(ctx, "/pb.UserOptService/UpdateCommentStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userOptServiceClient) GetVideoComment(ctx context.Context, in *GetVideoCommentReq, opts ...grpc.CallOption) (*GetVideoCommentReqResp, error) {
+	out := new(GetVideoCommentReqResp)
+	err := c.cc.Invoke(ctx, "/pb.UserOptService/GetVideoComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userOptServiceClient) GetUserFollower(ctx context.Context, in *GetUserFollowerReq, opts ...grpc.CallOption) (*GetUserFollowerResp, error) {
+	out := new(GetUserFollowerResp)
+	err := c.cc.Invoke(ctx, "/pb.UserOptService/GetUserFollower", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserOptServiceServer is the server API for UserOptService service.
 // All implementations must embed UnimplementedUserOptServiceServer
 // for forward compatibility
@@ -71,6 +111,10 @@ type UserOptServiceServer interface {
 	GetUserFavorite(context.Context, *GetUserFavoriteReq) (*GetUserFavoriteResp, error)
 	GetUserFollow(context.Context, *GetUserFollowReq) (*GetUserFollowResp, error)
 	UpdateFavoriteStatus(context.Context, *UpdateFavoriteStatusReq) (*UpdateFavoriteStatusResp, error)
+	UpdateFollowStatus(context.Context, *UpdateFollowStatusReq) (*UpdateFollowStatusResp, error)
+	UpdateCommentStatus(context.Context, *UpdateCommentStatusReq) (*UpdateCommentStatusResp, error)
+	GetVideoComment(context.Context, *GetVideoCommentReq) (*GetVideoCommentReqResp, error)
+	GetUserFollower(context.Context, *GetUserFollowerReq) (*GetUserFollowerResp, error)
 	mustEmbedUnimplementedUserOptServiceServer()
 }
 
@@ -86,6 +130,18 @@ func (UnimplementedUserOptServiceServer) GetUserFollow(context.Context, *GetUser
 }
 func (UnimplementedUserOptServiceServer) UpdateFavoriteStatus(context.Context, *UpdateFavoriteStatusReq) (*UpdateFavoriteStatusResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateFavoriteStatus not implemented")
+}
+func (UnimplementedUserOptServiceServer) UpdateFollowStatus(context.Context, *UpdateFollowStatusReq) (*UpdateFollowStatusResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFollowStatus not implemented")
+}
+func (UnimplementedUserOptServiceServer) UpdateCommentStatus(context.Context, *UpdateCommentStatusReq) (*UpdateCommentStatusResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCommentStatus not implemented")
+}
+func (UnimplementedUserOptServiceServer) GetVideoComment(context.Context, *GetVideoCommentReq) (*GetVideoCommentReqResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVideoComment not implemented")
+}
+func (UnimplementedUserOptServiceServer) GetUserFollower(context.Context, *GetUserFollowerReq) (*GetUserFollowerResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserFollower not implemented")
 }
 func (UnimplementedUserOptServiceServer) mustEmbedUnimplementedUserOptServiceServer() {}
 
@@ -154,6 +210,78 @@ func _UserOptService_UpdateFavoriteStatus_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserOptService_UpdateFollowStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateFollowStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserOptServiceServer).UpdateFollowStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserOptService/UpdateFollowStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserOptServiceServer).UpdateFollowStatus(ctx, req.(*UpdateFollowStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserOptService_UpdateCommentStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCommentStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserOptServiceServer).UpdateCommentStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserOptService/UpdateCommentStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserOptServiceServer).UpdateCommentStatus(ctx, req.(*UpdateCommentStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserOptService_GetVideoComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVideoCommentReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserOptServiceServer).GetVideoComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserOptService/GetVideoComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserOptServiceServer).GetVideoComment(ctx, req.(*GetVideoCommentReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserOptService_GetUserFollower_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserFollowerReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserOptServiceServer).GetUserFollower(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserOptService/GetUserFollower",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserOptServiceServer).GetUserFollower(ctx, req.(*GetUserFollowerReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserOptService_ServiceDesc is the grpc.ServiceDesc for UserOptService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -172,6 +300,22 @@ var UserOptService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateFavoriteStatus",
 			Handler:    _UserOptService_UpdateFavoriteStatus_Handler,
+		},
+		{
+			MethodName: "UpdateFollowStatus",
+			Handler:    _UserOptService_UpdateFollowStatus_Handler,
+		},
+		{
+			MethodName: "UpdateCommentStatus",
+			Handler:    _UserOptService_UpdateCommentStatus_Handler,
+		},
+		{
+			MethodName: "GetVideoComment",
+			Handler:    _UserOptService_GetVideoComment_Handler,
+		},
+		{
+			MethodName: "GetUserFollower",
+			Handler:    _UserOptService_GetUserFollower_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

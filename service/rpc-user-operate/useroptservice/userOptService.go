@@ -13,20 +13,31 @@ import (
 )
 
 type (
+	Comment                  = userOptPb.Comment
 	GetUserFavoriteReq       = userOptPb.GetUserFavoriteReq
 	GetUserFavoriteResp      = userOptPb.GetUserFavoriteResp
 	GetUserFollowReq         = userOptPb.GetUserFollowReq
 	GetUserFollowResp        = userOptPb.GetUserFollowResp
+	GetUserFollowerReq       = userOptPb.GetUserFollowerReq
+	GetUserFollowerResp      = userOptPb.GetUserFollowerResp
 	GetVideoCommentReq       = userOptPb.GetVideoCommentReq
 	GetVideoCommentReqResp   = userOptPb.GetVideoCommentReqResp
+	UpdateCommentStatusReq   = userOptPb.UpdateCommentStatusReq
+	UpdateCommentStatusResp  = userOptPb.UpdateCommentStatusResp
 	UpdateFavoriteStatusReq  = userOptPb.UpdateFavoriteStatusReq
 	UpdateFavoriteStatusResp = userOptPb.UpdateFavoriteStatusResp
+	UpdateFollowStatusReq    = userOptPb.UpdateFollowStatusReq
+	UpdateFollowStatusResp   = userOptPb.UpdateFollowStatusResp
 
 	UserOptService interface {
 		// -----------------------userFavoriteList-----------------------
 		GetUserFavorite(ctx context.Context, in *GetUserFavoriteReq, opts ...grpc.CallOption) (*GetUserFavoriteResp, error)
 		GetUserFollow(ctx context.Context, in *GetUserFollowReq, opts ...grpc.CallOption) (*GetUserFollowResp, error)
 		UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error)
+		UpdateFollowStatus(ctx context.Context, in *UpdateFollowStatusReq, opts ...grpc.CallOption) (*UpdateFollowStatusResp, error)
+		UpdateCommentStatus(ctx context.Context, in *UpdateCommentStatusReq, opts ...grpc.CallOption) (*UpdateCommentStatusResp, error)
+		GetVideoComment(ctx context.Context, in *GetVideoCommentReq, opts ...grpc.CallOption) (*GetVideoCommentReqResp, error)
+		GetUserFollower(ctx context.Context, in *GetUserFollowerReq, opts ...grpc.CallOption) (*GetUserFollowerResp, error)
 	}
 
 	defaultUserOptService struct {
@@ -54,4 +65,24 @@ func (m *defaultUserOptService) GetUserFollow(ctx context.Context, in *GetUserFo
 func (m *defaultUserOptService) UpdateFavoriteStatus(ctx context.Context, in *UpdateFavoriteStatusReq, opts ...grpc.CallOption) (*UpdateFavoriteStatusResp, error) {
 	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
 	return client.UpdateFavoriteStatus(ctx, in, opts...)
+}
+
+func (m *defaultUserOptService) UpdateFollowStatus(ctx context.Context, in *UpdateFollowStatusReq, opts ...grpc.CallOption) (*UpdateFollowStatusResp, error) {
+	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
+	return client.UpdateFollowStatus(ctx, in, opts...)
+}
+
+func (m *defaultUserOptService) UpdateCommentStatus(ctx context.Context, in *UpdateCommentStatusReq, opts ...grpc.CallOption) (*UpdateCommentStatusResp, error) {
+	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
+	return client.UpdateCommentStatus(ctx, in, opts...)
+}
+
+func (m *defaultUserOptService) GetVideoComment(ctx context.Context, in *GetVideoCommentReq, opts ...grpc.CallOption) (*GetVideoCommentReqResp, error) {
+	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
+	return client.GetVideoComment(ctx, in, opts...)
+}
+
+func (m *defaultUserOptService) GetUserFollower(ctx context.Context, in *GetUserFollowerReq, opts ...grpc.CallOption) (*GetUserFollowerResp, error) {
+	client := userOptPb.NewUserOptServiceClient(m.cli.Conn())
+	return client.GetUserFollower(ctx, in, opts...)
 }

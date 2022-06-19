@@ -35,21 +35,7 @@ func (l *AuthsInfoLogic) AuthsInfo(in *userInfoPb.AuthsInfoReq) (*userInfoPb.Aut
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("get auths info fail"), "get auths info fail FindAll  err : %v , authIds:%v", err, in.AuthIds)
 	}
-	/*
-	     UserId         int64     `db:"user_id"`
-	     UserName       string    `db:"user_name"`
-	     PasswordDigest string    `db:"password_digest"`
-	     FollowCount    int64     `db:"follow_count"`
-	     FollowerCount  int64     `db:"follower_count"`
 
-	   UserId        int64  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	   UserName      string `protobuf:"bytes,2,opt,name=userName,proto3" json:"userName,omitempty"`
-	   FollowCount   int64  `protobuf:"varint,3,opt,name=followCount,proto3" json:"followCount,omitempty"`
-	   FollowerCount int64  `protobuf:"varint,4,opt,name=followerCount,proto3" json:"followerCount,omitempty"`
-	   IsFollowing   bool   `protobuf:"varint,5,opt,name=isFollowing,proto3" json:"isFollowing,omitempty"`
-
-	 SELECT `user_id`,`user_name`,`password_digest`,`follow_count`,`follower_count`,`del_state`,`create_time` FROM `user` WHERE user_id = ('3,4,5,6') AND del_state = 0 ORDER BY user_id ASC;
-	*/
 	var authsInfo map[int64]*userInfoPb.User
 	if len(auths) > 0 {
 		authsInfo = make(map[int64]*userInfoPb.User, len(auths))

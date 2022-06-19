@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"douyin/common/globalkey"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -30,9 +31,11 @@ var (
 type (
 	userModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *User) (sql.Result, error)
+		InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error)
 		FindOne(ctx context.Context, userId int64) (*User, error)
 		FindOneByUserName(ctx context.Context, userName string) (*User, error)
 		Update(ctx context.Context, session sqlx.Session, data *User) (sql.Result, error)
+		UpdateStatus(ctx context.Context, session sqlx.Session, key string, idx string, actionType, id int64) (sql.Result, error)
 		UpdateWithVersion(ctx context.Context, session sqlx.Session, data *User) error
 		Delete(ctx context.Context, session sqlx.Session, userId int64) error
 	}
@@ -61,6 +64,7 @@ func newUserModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserModel {
 }
 
 func (m *defaultUserModel) Insert(ctx context.Context, session sqlx.Session, data *User) (sql.Result, error) {
+	// data.DeletedTime = time.Unix(0,0)
 	douyin2UserUserIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserUserIdPrefix, data.UserId)
 	douyin2UserUserNameKey := fmt.Sprintf("%s%v", cacheDouyin2UserUserNamePrefix, data.UserName)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -72,6 +76,15 @@ func (m *defaultUserModel) Insert(ctx context.Context, session sqlx.Session, dat
 	}, douyin2UserUserIdKey, douyin2UserUserNameKey)
 }
 
+func (m *defaultUserModel) InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error) {
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%d,%d,?) ON DUPLICATE KEY UPDATE %s=?", m.table, field, userId, objId, setStatus)
+		if session != nil {
+			return session.ExecCtx(ctx, query, opt, opt)
+		}
+		return conn.ExecCtx(ctx, query, opt, opt)
+	})
+}
 func (m *defaultUserModel) FindOne(ctx context.Context, userId int64) (*User, error) {
 	douyin2UserUserIdKey := fmt.Sprintf("%s%v", cacheDouyin2UserUserIdPrefix, userId)
 	var resp User
@@ -119,6 +132,17 @@ func (m *defaultUserModel) Update(ctx context.Context, session sqlx.Session, dat
 		}
 		return conn.ExecCtx(ctx, query, data.UserName, data.PasswordDigest, data.FollowCount, data.FollowerCount, data.DelState, data.UserId)
 	}, douyin2UserUserIdKey, douyin2UserUserNameKey)
+}
+
+func (m *defaultUserModel) UpdateStatus(ctx context.Context, session sqlx.Session, key string, idx string, actionType, id int64) (sql.Result, error) {
+
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("UPDATE %s SET %s=%s+? WHERE %s=?", m.table, key, key, idx)
+		if session != nil {
+			return session.ExecCtx(ctx, query, actionType, id)
+		}
+		return conn.ExecCtx(ctx, query, actionType, id)
+	})
 }
 
 func (m *defaultUserModel) UpdateWithVersion(ctx context.Context, session sqlx.Session, data *User) error {

@@ -7,6 +7,7 @@ import (
 	"douyin/service/rpc-user-operate/useroptservice"
 	"douyin/service/rpc-video-service/videoSvcPb"
 	"github.com/jinzhu/copier"
+	"github.com/zeromicro/go-zero/core/mr"
 
 	"douyin/service/api/internal/svc"
 	"douyin/service/api/internal/types"
@@ -49,7 +50,6 @@ func (l *GetFavoriteListLogic) GetFavoriteList(req *types.FavoriteListReq) (resp
 		videoArr, err := l.svcCtx.VideoSvcRpcClient.GetMyFavoriteVideos(l.ctx, &videoSvcPb.MyFavoriteVideosReq{
 			VideoIdArr: videosId.UserFavoriteArr,
 		})
-
 		if err != nil {
 			return &types.FavoriteListRes{
 				Status: types.Status{
@@ -60,36 +60,54 @@ func (l *GetFavoriteListLogic) GetFavoriteList(req *types.FavoriteListReq) (resp
 		}
 
 		// 把视频里的作者的信息找出来 并去重
-		var authIdsTemp map[int64]interface{}
-		var authIds []int64
-		authIdsTemp = make(map[int64]interface{}, len(videoArr.VideoPubList))
+		var authIds = make([]int64, 0, len(videoArr.VideoPubList))
 		for _, v := range videoArr.VideoPubList {
-			authIdsTemp[v.AuthId] = nil
-		}
-		authIds = make([]int64, 0, len(authIdsTemp))
-		for k := range authIdsTemp {
-			authIds = append(authIds, k)
+			var authIdsTemp = make(map[int64]interface{}, len(videoArr.VideoPubList))
+
+			if _, ok := authIdsTemp[v.AuthId]; !ok {
+				authIdsTemp[v.AuthId] = nil
+				authIds = append(authIds, v.AuthId)
+			}
 		}
 
-		// 查询所有视频的的作者信息
-		authsInfo, err := l.svcCtx.UserInfoRpcClient.AuthsInfo(l.ctx, &userInfoPb.AuthsInfoReq{ // 返回作者信息 按照作者id升序排列
-			AuthIds: authIds,
+		var authsInfo *userInfoPb.AuthsInfoResp
+		var userFollowList *useroptservice.GetUserFollowResp
+
+		err = mr.Finish(func() error {
+			// 查询所有视频的的作者信息
+			authsInfo, err = l.svcCtx.UserInfoRpcClient.AuthsInfo(l.ctx, &userInfoPb.AuthsInfoReq{ // 返回作者信息 按照作者id升序排列
+				AuthIds: authIds,
+			})
+			if err != nil {
+				resp = &types.FavoriteListRes{
+					Status: types.Status{
+						Code: xerr.ERR,
+						Msg:  "get author list fail " + err.Error(),
+					},
+				}
+				return err
+			}
+			return nil
+		}, func() error {
+			// 查找当前用户对作者的关注状态
+			userFollowList, err = l.svcCtx.UserOptSvcRpcClient.GetUserFollow(l.ctx, &useroptservice.GetUserFollowReq{
+				UserId:  req.UserId,
+				AuthIds: authIds,
+			})
+			if err != nil {
+				resp = &types.FavoriteListRes{
+					Status: types.Status{
+						Code: xerr.ERR,
+						Msg:  "get user follow list fail " + err.Error(),
+					},
+				}
+				return err
+			}
+			return nil
 		})
-
 		if err != nil {
-			return &types.FavoriteListRes{
-				Status: types.Status{
-					Code: xerr.ERR,
-					Msg:  "get author list fail " + err.Error(),
-				},
-			}, nil
+			return resp, err
 		}
-
-		// 查找当前用户对作者的关注状态
-		userFollowList, err := l.svcCtx.UserOptSvcRpcClient.GetUserFollow(l.ctx, &useroptservice.GetUserFollowReq{
-			UserId:  req.UserId,
-			AuthIds: authIds,
-		})
 
 		for _, v := range videoArr.VideoPubList {
 			var video types.PubVideo
@@ -109,14 +127,12 @@ func (l *GetFavoriteListLogic) GetFavoriteList(req *types.FavoriteListReq) (resp
 			},
 			FavoriteList: videoList,
 		}, nil
-	} else { // 没有点赞的视频
 
+	} else { // 没有点赞视频
 		return &types.FavoriteListRes{
 			Status: types.Status{
 				Code: xerr.OK,
 			},
-			FavoriteList: nil,
 		}, nil
 	}
-
 }

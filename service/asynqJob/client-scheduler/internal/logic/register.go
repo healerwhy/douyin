@@ -21,7 +21,5 @@ func (l *MqueueScheduler) Register() {
 
 	l.GetUserFavoriteStatusScheduler()
 
-	l.GetUserCommentScheduler()
-
 	l.GetUserFollowStatusScheduler()
 }

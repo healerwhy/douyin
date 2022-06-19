@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"douyin/common/globalkey"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -29,8 +30,10 @@ var (
 type (
 	videoModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *Video) (sql.Result, error)
+		InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Video, error)
 		Update(ctx context.Context, session sqlx.Session, data *Video) (sql.Result, error)
+		UpdateStatus(ctx context.Context, session sqlx.Session, key string, idx string, actionType, id int64) (sql.Result, error)
 		UpdateWithVersion(ctx context.Context, session sqlx.Session, data *Video) error
 		Delete(ctx context.Context, session sqlx.Session, id int64) error
 	}
@@ -62,6 +65,7 @@ func newVideoModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultVideoModel {
 }
 
 func (m *defaultVideoModel) Insert(ctx context.Context, session sqlx.Session, data *Video) (sql.Result, error) {
+	// data.DeletedTime = time.Unix(0,0)
 	douyin2VideoIdKey := fmt.Sprintf("%s%v", cacheDouyin2VideoIdPrefix, data.Id)
 	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, videoRowsExpectAutoSet)
@@ -72,6 +76,15 @@ func (m *defaultVideoModel) Insert(ctx context.Context, session sqlx.Session, da
 	}, douyin2VideoIdKey)
 }
 
+func (m *defaultVideoModel) InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error) {
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%d,%d,?) ON DUPLICATE KEY UPDATE %s=?", m.table, field, userId, objId, setStatus)
+		if session != nil {
+			return session.ExecCtx(ctx, query, opt, opt)
+		}
+		return conn.ExecCtx(ctx, query, opt, opt)
+	})
+}
 func (m *defaultVideoModel) FindOne(ctx context.Context, id int64) (*Video, error) {
 	douyin2VideoIdKey := fmt.Sprintf("%s%v", cacheDouyin2VideoIdPrefix, id)
 	var resp Video
@@ -98,6 +111,17 @@ func (m *defaultVideoModel) Update(ctx context.Context, session sqlx.Session, da
 		}
 		return conn.ExecCtx(ctx, query, data.AuthId, data.Title, data.PlayURL, data.CoverURL, data.FavoriteCount, data.CommentCount, data.DelState, data.IsFavorite, data.Id)
 	}, douyin2VideoIdKey)
+}
+
+func (m *defaultVideoModel) UpdateStatus(ctx context.Context, session sqlx.Session, key string, idx string, actionType, id int64) (sql.Result, error) {
+
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("UPDATE %s SET %s=%s+? WHERE %s=?", m.table, key, key, idx)
+		if session != nil {
+			return session.ExecCtx(ctx, query, actionType, id)
+		}
+		return conn.ExecCtx(ctx, query, actionType, id)
+	})
 }
 
 func (m *defaultVideoModel) UpdateWithVersion(ctx context.Context, session sqlx.Session, data *Video) error {

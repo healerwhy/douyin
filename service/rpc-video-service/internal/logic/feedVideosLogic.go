@@ -30,8 +30,10 @@ func (l *FeedVideosLogic) FeedVideos(in *videoSvcPb.FeedVideosReq) (*videoSvcPb.
 	// 转换为数据库里的时间格式
 	reqTime := time.Unix(in.LastTime, 0)
 
+	logx.Errorf("小于这个时间的视频reqTime: %v", reqTime)
+
 	whereBuilder := l.svcCtx.VideoModel.RowBuilder().Where("create_time < ?", reqTime)
-	list, err := l.svcCtx.VideoModel.FindPageListByPage(l.ctx, whereBuilder, 1, 30, "create_time ASC")
+	list, err := l.svcCtx.VideoModel.FindPageListByPage(l.ctx, whereBuilder, 1, 10, "create_time DESC")
 	if err != nil {
 		return nil, errors.Wrapf(xerr.NewErrMsg("get video list fail"), "get video list fail FindPageListByIdDESC  err : %v , lastTime:%d", err, in.LastTime)
 	}
@@ -47,8 +49,11 @@ func (l *FeedVideosLogic) FeedVideos(in *videoSvcPb.FeedVideosReq) (*videoSvcPb.
 			_ = copier.Copy(&video, v)
 			videos = append(videos, &video)
 		}
-		NextTime = list[0].CreateTime.Unix()
+		// 最早的视频的时间 时间戳最小的
+		NextTime = list[len(list)-1].CreateTime.Unix()
 	}
+
+	logx.Errorf("下次请求的视频小于这个时间的视频: %v", list[len(list)-1].CreateTime)
 
 	return &videoSvcPb.FeedVideosResp{
 		VideoPubList: videos,

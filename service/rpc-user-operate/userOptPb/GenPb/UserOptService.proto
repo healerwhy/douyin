@@ -20,6 +20,28 @@ message UpdateFavoriteStatusReq {
 message UpdateFavoriteStatusResp {
 }
 
+// 用户给用户关注
+message UpdateFollowStatusReq {
+  int64 followId = 1; //videoId
+  int64 userId = 2; //userId
+  int64 actionType = 3; //点赞
+}
+
+message UpdateFollowStatusResp {
+}
+
+// 用户对视频评论
+message UpdateCommentStatusReq {
+  int64 videoId = 1; //videoId
+  int64 userId = 2; //userId
+  int64 commentId = 3; //commentId
+  int64 actionType = 4; //评论 取消评论
+}
+
+message UpdateCommentStatusResp {
+}
+
+
 
 // 获得用户和视频的点赞关系
 message GetUserFavoriteReq {
@@ -41,12 +63,28 @@ message GetUserFollowResp {
   map<int64, bool> userFollowList = 1; //用户和视频的关注关系
 }
 
+// 获得用户的粉丝列表
+message GetUserFollowerReq {
+  int64 userId = 1; //user_id
+}
+message GetUserFollowerResp {
+  map<int64, bool> userFollowerList = 1; //用户和视频的关注关系
+}
+
+
 // 获得视频的评论列表
 message GetVideoCommentReq {
-  int64 video_id = 1; //video_id
+  int64 videoId = 1; //video_id
 }
+message Comment {
+  int64 commentId = 1;
+  int64 userId = 2;
+  string content = 3;
+  string createDate = 4;
+}
+
 message GetVideoCommentReqResp {
-  int64 id = 1; //video_id
+  repeated Comment commentList = 1;//comment_list
 }
 
 // ------------------------------------ 
@@ -58,4 +96,8 @@ service UserOptService{
 	 rpc GetUserFavorite(GetUserFavoriteReq) returns (GetUserFavoriteResp);
    rpc GetUserFollow(GetUserFollowReq) returns (GetUserFollowResp);
    rpc UpdateFavoriteStatus(UpdateFavoriteStatusReq) returns (UpdateFavoriteStatusResp);
+   rpc UpdateFollowStatus(UpdateFollowStatusReq) returns (UpdateFollowStatusResp);
+   rpc UpdateCommentStatus(UpdateCommentStatusReq) returns (UpdateCommentStatusResp);
+   rpc GetVideoComment(GetVideoCommentReq) returns (GetVideoCommentReqResp);
+   rpc GetUserFollower(GetUserFollowerReq) returns (GetUserFollowerResp);
 }
