@@ -26,20 +26,18 @@ func NewGetUserFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 
 func (l *GetUserFollowLogic) GetUserFollow(in *userOptPb.GetUserFollowReq) (*userOptPb.GetUserFollowResp, error) {
 
-	if in.AuthIds != nil {
+	if in.AuthIds != nil { // 查看用户是否关注了这些作者
 		whereBuilder := l.svcCtx.UserFollowModel.RowBuilder().Where(squirrel.Eq{"user_id": in.UserId, "follow_id": in.AuthIds}).Where(squirrel.NotEq{"is_follow": 0})
 		res, err := l.svcCtx.UserFollowModel.FindAll(l.ctx, whereBuilder, "")
 		if err != nil {
 			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFollow  err , id:%d , err:%v", in.UserId, err)
 		}
 
-		//logx.Errorf("GetUserFollow  %#v", res)
-
 		var userFollowList map[int64]bool
 		if len(res) > 0 {
 			userFollowList = make(map[int64]bool, len(res))
 			for _, v := range res {
-				userFollowList[v.UserId] = true
+				userFollowList[v.FollowId] = true
 			}
 		}
 
@@ -47,7 +45,7 @@ func (l *GetUserFollowLogic) GetUserFollow(in *userOptPb.GetUserFollowReq) (*use
 			UserFollowList: userFollowList,
 		}, nil
 
-	} else {
+	} else { // 把该用户的所以关注者找出来
 		whereBuilder := l.svcCtx.UserFollowModel.RowBuilder().Where("user_id = ? and is_follow != 0 ", in.UserId)
 
 		res, err := l.svcCtx.UserFollowModel.FindAll(l.ctx, whereBuilder, "user_id ASC")
@@ -55,14 +53,11 @@ func (l *GetUserFollowLogic) GetUserFollow(in *userOptPb.GetUserFollowReq) (*use
 			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFollow  err , id:%d , err:%v", in.UserId, err)
 		}
 
-		/*
-			这里用数组是因为拉取点赞列表的接口返回的是数组 可以直接返回 比较方便
-		*/
 		var userFollowList map[int64]bool
 		if len(res) > 0 {
 			userFollowList = make(map[int64]bool, len(res))
 			for _, v := range res {
-				userFollowList[v.UserId] = true
+				userFollowList[v.FollowId] = true
 			}
 		}
 

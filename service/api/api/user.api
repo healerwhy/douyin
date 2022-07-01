@@ -53,7 +53,7 @@ type (
 )
 
 // 用户信息
-type Author {
+type User {
 	UserId           int64  `json:"id"`
 	UserName         string `json:"name"`
 	FollowCount   	 int64  `json:"follow_count"`
@@ -67,7 +67,7 @@ type (
 	}
 	UserInfoRes {
 		Status
-		User *Author `json:"user,omitempty"`
+		User *User `json:"user,omitempty"`
 	}
 )
 @server (

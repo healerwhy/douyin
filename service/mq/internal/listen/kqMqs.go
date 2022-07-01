@@ -19,6 +19,7 @@ func KqMqs(c config.Config, ctx context.Context, svcContext *svc.ServiceContext)
 		kq.MustNewQueue(c.UserFavoriteOptServiceConf, kqMq.NewUserFavoriteUpdateMq(ctx, svcContext)),
 		kq.MustNewQueue(c.UserFollowOptServiceConf, kqMq.NewUserFollowUpdateMq(ctx, svcContext)),
 		kq.MustNewQueue(c.UserCommentOptServiceConf, kqMq.NewUserCommentUpdateMq(ctx, svcContext)),
+		// 配置
 		//.....
 	}
 

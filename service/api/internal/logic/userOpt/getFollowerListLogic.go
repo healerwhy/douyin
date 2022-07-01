@@ -42,11 +42,11 @@ func (l *GetFollowerListLogic) GetFollowerList(req *types.FollowerListReq) (resp
 	}
 
 	var followersIdArr []int64
-	for k, _ := range followersIdMap.UserFollowerList {
+	for k := range followersIdMap.UserFollowerList {
 		followersIdArr = append(followersIdArr, k)
 	}
 
-	var userList []*types.Author // 最终返回的关注者列表
+	var userList []*types.User // 最终返回的关注者列表
 
 	if followersIdMap != nil {
 
@@ -69,7 +69,7 @@ func (l *GetFollowerListLogic) GetFollowerList(req *types.FollowerListReq) (resp
 		})
 
 		for _, v := range followersInfo.Auths {
-			var user types.Author
+			var user types.User
 			_ = copier.Copy(&user, v)
 			user.IsFollow = allFollowersMap.UserFollowList[v.UserId]
 

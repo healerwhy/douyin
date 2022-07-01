@@ -30,12 +30,13 @@ func (l *UpdateCommentStatusLogic) UpdateCommentStatus(in *userOptPb.UpdateComme
 	tmp := []string{"video_id", "comment_id", "user_id", "del_state"}
 	field := strings.Join(tmp, ",")
 	var action int64
-	if in.ActionType == 1 { // 1是添加评论 0是删除评论
+	if in.ActionType == model.ActionADD { // 1是添加评论 0是删除评论
 		action = 0 // del_state 0 是存在 1是已删除
-	} else if in.ActionType == 0 {
+	} else if in.ActionType == model.ActionCancel {
 		action = 1
 	}
-	err := l.svcCtx.UserFollowModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
+
+	err := l.svcCtx.UserCommentModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
 
 		// 这里有点不一样 要是model文件里的内容变了 这里也要变
 		// InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, videoId, objId, userId, opt int64)
@@ -45,7 +46,7 @@ func (l *UpdateCommentStatusLogic) UpdateCommentStatus(in *userOptPb.UpdateComme
 			return err
 		}
 
-		// 消息中传来的 in.action是 0 1 写入user comment_count 就需要变成 -1 / +1
+		// 消息中传来的 in.action是 0 1 写入video comment_count 就需要变成 -1 / +1
 		actionType := l.getActionType(in.ActionType)
 		_, err = l.svcCtx.VideoModel.UpdateStatus(l.ctx, session, "comment_count", "id", actionType, in.VideoId)
 		if err != nil {
@@ -55,8 +56,9 @@ func (l *UpdateCommentStatusLogic) UpdateCommentStatus(in *userOptPb.UpdateComme
 
 		return nil
 	})
+
 	if err != nil {
-		logx.Error("UpdateFollowStatus-------> trans fail")
+		logx.Error("UpdateCommentStatus-------> trans fail")
 		return &userOptPb.UpdateCommentStatusResp{}, err
 	}
 

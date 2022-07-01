@@ -23,22 +23,23 @@ func NewGetUserFollowStatusHandler(svcCtx *svc.ServiceContext) *GetUserFollowSta
 	}
 }
 
-//  every one minute exec : if return err != nil , asynq will retry
+// ProcessTask if return err != nil , asynq will retry
 func (l *GetUserFollowStatusHandler) ProcessTask(ctx context.Context, _ *asynq.Task) error {
 
-	logx.Infof("NewGetUserFollowStatusHandler server -----> every 20s exec ")
 	vals, err := l.svcCtx.RedisCache.SmembersCtx(ctx, globalkey.FollowSetKey)
 	if err != nil {
 		logx.Errorf("RedisCache.SmembersCtx error -----> %v", err)
 		return err
 	}
 	if len(vals) == 0 {
-		logx.Infof("RedisCache.SmembersCtx no data")
 		return nil
 	}
 
 	// 持久化数据
 	mr.ForEach(func(source chan<- interface{}) {
+
+		logx.Infof("NewGetUserFollowStatusHandler server -----> every 10s exec And exist data in redis cache")
+
 		for _, followKey := range vals {
 			source <- followKey
 		}

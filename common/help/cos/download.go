@@ -44,7 +44,7 @@ func (*DownloadComment) DownloadComment(ctx context.Context, key string, Comment
 					panic(err)
 				}
 				all, err := ioutil.ReadAll(resp.Body)
-				resp.Body.Close()
+				_ = resp.Body.Close()
 
 				if err != nil {
 					return

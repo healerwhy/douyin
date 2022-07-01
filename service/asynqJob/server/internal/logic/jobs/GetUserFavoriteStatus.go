@@ -26,17 +26,16 @@ func NewGetUserFavoriteStatusHandler(svcCtx *svc.ServiceContext) *GetUserFavorit
 // ProcessTask every one minute exec : if return err != nil , asynq will retry
 func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq.Task) error {
 
-	logx.Infof("NewGetUserFavoriteStatusHandler server -----> every 20s exec ")
 	vals, err := l.svcCtx.RedisCache.SmembersCtx(ctx, globalkey.FavoriteSetKey)
 	if err != nil {
 		logx.Errorf("RedisCache.SmembersCtx error -----> %v", err)
 		return err
 	}
 	if len(vals) == 0 {
-		logx.Infof("RedisCache.SmembersCtx no data")
 		return nil
 	}
 
+	logx.Infof("NewGetUserFavoriteStatusHandler server -----> every 10s exec AND exist data in redis cache")
 	// 持久化数据
 	mr.ForEach(func(source chan<- interface{}) {
 		for _, videoIdKey := range vals {
@@ -48,8 +47,6 @@ func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq
 		// 从拉下来的东西都删掉users, err :=
 		usersInfoTemp, err := l.svcCtx.RedisCache.EvalShaCtx(ctx, l.svcCtx.ScriptREMTag, []string{videoIdKey})
 
-		logx.Infof("RedisCache.EvalShaCtx error -----> %v %v", err, usersInfoTemp)
-
 		if err != nil { // 获取赞了这个视频的所有的用户Id
 			logx.Errorf("RedisCache.SmembersCtx error -----> %v", err)
 			return
@@ -58,8 +55,6 @@ func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq
 		// 切分出视频的Id
 		_, videoIdStr, _ := strings.Cut(videoIdKey, ":")
 		videoId, _ := strconv.ParseInt(videoIdStr, 10, 64)
-
-		logx.Infof("RedisCache.EvalShaCtx usersInfo +++++ %v", usersInfoTemp)
 
 		var usersInfo []interface{}
 		usersInfo = usersInfoTemp.([]interface{})
@@ -73,7 +68,6 @@ func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq
 			members := strings.Split(item.(string), ":")
 			userid, _ := strconv.ParseInt(members[0], 10, 64)
 			actType, _ := strconv.ParseInt(members[1], 10, 64)
-
 			_, _ = l.svcCtx.UserOptSvcRpcClient.UpdateFavoriteStatus(ctx, &userOptPb.UpdateFavoriteStatusReq{
 				VideoId:    videoId,
 				UserId:     userid,

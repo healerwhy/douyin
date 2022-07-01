@@ -33,6 +33,8 @@ func (l *FollowOptLogic) FollowOpt(req *types.FollowOptReq) (resp *types.FollowO
 	var msgTemp messageTypes.UserFollowOptMessage
 	_ = copier.Copy(&msgTemp, req)
 
+	msgTemp.UserId = l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
+
 	// 前端传入的是1，2表示关注与取消关注，入口这里就将它转换成1，0表示点赞与取消关注
 	msgTemp.ActionType = l.getActionType(req.ActionType)
 
@@ -44,7 +46,7 @@ func (l *FollowOptLogic) FollowOpt(req *types.FollowOptReq) (resp *types.FollowO
 			},
 		}, nil
 	}
-	msgTemp.UserId = l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
+	
 	logx.Infof("FollowOpt msgTemp : %+v", msgTemp)
 
 	// 序列化

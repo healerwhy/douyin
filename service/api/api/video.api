@@ -26,7 +26,7 @@ type GetPubVideoListReq {
 
 type PubVideo {
 	Id            int64  `json:"id"`
-	Author        Author `json:"author"`
+	User        User `json:"author"`
 	PlayURL       string `json:"play_url"`
 	CoverURL      string `json:"cover_url"`
 	FavoriteCount int    `json:"favorite_count"`

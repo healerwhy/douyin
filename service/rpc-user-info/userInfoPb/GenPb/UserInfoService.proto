@@ -30,7 +30,6 @@ message User {
   string userName = 2; //name
   int64 followCount = 3; //followCount
   int64 followerCount = 4; //followerCount
-  bool isFollowing = 5; //isFollowing
 }
 
 message UserInfoReq {

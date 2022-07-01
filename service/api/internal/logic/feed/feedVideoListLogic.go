@@ -155,7 +155,6 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 				_ = copier.Copy(&video, v)
 				_ = copier.Copy(&video.Author, authsInfo.Auths[v.AuthId])
 
-				logx.Errorf("video %+v", video)
 				video.IsFavorite = false
 				video.Author.IsFollow = false
 

@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"douyin/service/rpc-user-info/userInfoPb"
+	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 
 	"douyin/service/rpc-user-info/internal/svc"
@@ -24,20 +25,28 @@ func NewInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InfoLogic {
 }
 
 func (l *InfoLogic) Info(in *userInfoPb.UserInfoReq) (*userInfoPb.UserInfoResp, error) {
-	user, err := l.svcCtx.UserModel.FindOne(l.ctx, in.UserId)
+	userInfo, err := l.svcCtx.UserModel.FindOne(l.ctx, in.UserId)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
+	logx.Errorf(" resp: %+v", userInfo)
+	/*
+		UserId         int64     `db:"user_id"`
+		UserName       string    `db:"user_name"`
+		FollowCount    int64     `db:"follow_count"`
+		FollowerCount  int64     `db:"follower_count"`
 
-	// 这里的isfollowing暂时定成false 后面应该根据 关系表进行再次查询
+		UserId        int64  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+		UserName      string `protobuf:"bytes,2,opt,name=userName,proto3" json:"userName,omitempty"`
+		FollowCount   int64  `protobuf:"varint,3,opt,name=followCount,proto3" json:"followCount,omitempty"`
+		FollowerCount int64  `protobuf:"varint,4,opt,name=followerCount,proto3" json:"followerCount,omitempty"`
+	*/
+
+	var user userInfoPb.User
+	_ = copier.Copy(&user, userInfo)
+
 	return &userInfoPb.UserInfoResp{
-		User: &userInfoPb.User{
-			UserId:        user.UserId,
-			UserName:      user.UserName,
-			FollowCount:   user.FollowCount,
-			FollowerCount: user.FollowerCount,
-			IsFollowing:   false,
-		},
+		User: &user,
 	}, nil
 }

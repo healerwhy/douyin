@@ -36,7 +36,7 @@ func (l *CommentOptLogic) CommentOpt(req *types.CommentOptReq) (resp *types.Comm
 	// 前端传入的是1，2表示评论取消评论，入口这里就将它转换成1，0表示评论取消评论
 	msgTemp, status, err := l.getActionType(req)
 
-	if msgTemp.ActionType == -99 || err != nil {
+	if msgTemp.ActionType == messageTypes.ActionErr || err != nil {
 		return status, nil
 	}
 	if msgTemp.ActionType == 1 {
@@ -58,7 +58,7 @@ func (l *CommentOptLogic) CommentOpt(req *types.CommentOptReq) (resp *types.Comm
 			},
 			Comment: &types.Comment{
 				CommentId: msgTemp.CommentId,
-				User: types.Author{
+				User: types.User{
 					UserId:        userInfo.User.UserId,
 					UserName:      userInfo.User.UserName,
 					FollowCount:   userInfo.User.FollowCount,
@@ -108,7 +108,6 @@ func (l *CommentOptLogic) getActionType(req *types.CommentOptReq) (*messageTypes
 		}, errors.New("operate error")
 	}
 
-	logx.Infof("CommentOpt msgTemp : %+v", msgTemp)
 	// 序列化
 	msg, err := json.Marshal(msgTemp)
 	if err != nil {

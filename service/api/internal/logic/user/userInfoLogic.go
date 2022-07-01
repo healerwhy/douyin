@@ -38,16 +38,17 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 			},
 		}, nil
 	}
+
 	return &types.UserInfoRes{
 		Status: types.Status{
 			Code: xerr.OK,
 		},
-		User: &types.Author{
+		User: &types.User{
 			UserId:        info.User.UserId,
 			UserName:      info.User.UserName,
 			FollowCount:   info.User.FollowCount,
 			FollowerCount: info.User.FollowerCount,
-			IsFollow:      info.User.IsFollowing,
+			IsFollow:      false,
 		},
 	}, nil
 }

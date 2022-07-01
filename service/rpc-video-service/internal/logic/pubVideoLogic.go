@@ -23,7 +23,7 @@ func NewPubVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PubVideo
 	}
 }
 
-// -----------------------video-----------------------
+// PubVideo -----------------------video-----------------------
 func (l *PubVideoLogic) PubVideo(in *videoSvcPb.PubVideoReq) (*videoSvcPb.PubVideoResp, error) {
 
 	_, err := l.svcCtx.VideoModel.Insert(l.ctx, nil, &model.Video{

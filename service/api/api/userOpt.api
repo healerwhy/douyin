@@ -33,7 +33,7 @@ type CommentOptReq {
 
 type Comment {
 	CommentId  int64  `json:"id" copyier:"id"`
-	User       Author `json:"user"`
+	User       User `json:"user"`
 	Content    string `json:"content"`
 	CreateTime string `json:"create_date"`
 }
@@ -78,7 +78,7 @@ type FollowListReq {
 
 type FollowListRes {
 	Status
-	UserFollowlist []*Author `json:"user_list,omitempty"`
+	UserFollowlist []*User `json:"user_list,omitempty"`
 }
 
 type FollowerListReq {
@@ -87,7 +87,7 @@ type FollowerListReq {
 
 type FollowerListRes {
 	Status
-	UserFollowerlist []*Author `json:"user_list,omitempty"`
+	UserFollowerlist []*User `json:"user_list,omitempty"`
 }
 
 type CommentListReq {

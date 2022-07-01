@@ -41,11 +41,13 @@ func (l *GetFollowListLogic) GetFollowList(req *types.FollowListReq) (resp *type
 	}
 
 	var followsIdArr []int64
-	for k, _ := range followsIdMap.UserFollowList {
+	for k := range followsIdMap.UserFollowList {
 		followsIdArr = append(followsIdArr, k)
 	}
 
-	var userList []*types.Author // 最终返回的关注者列表
+	logx.Errorf("followsIdArr: %v", followsIdArr)
+
+	var userList []*types.User // 最终返回的关注者列表
 
 	if followsIdMap != nil {
 
@@ -62,7 +64,7 @@ func (l *GetFollowListLogic) GetFollowList(req *types.FollowListReq) (resp *type
 		}
 
 		for _, v := range followsInfo.Auths {
-			var user types.Author
+			var user types.User
 			_ = copier.Copy(&user, v)
 			user.IsFollow = true
 

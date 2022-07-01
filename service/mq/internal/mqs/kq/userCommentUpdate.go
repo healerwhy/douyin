@@ -25,8 +25,9 @@ type UserCommentOpt struct {
 
 func NewUserCommentUpdateMq(ctx context.Context, svcCtx *svc.ServiceContext) *UserCommentOpt {
 	return &UserCommentOpt{
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		ctx:        ctx,
+		svcCtx:     svcCtx,
+		CommentOpt: cos.UpdateComment{},
 	}
 }
 
@@ -49,7 +50,7 @@ func (l *UserCommentOpt) Consume(_, val string) error {
 func (l *UserCommentOpt) execService(message messageTypes.UserCommentOptMessage) error {
 
 	actionType, err := l.getActionType(message.ActionType, message)
-	if err != nil {
+	if actionType == -99 || err != nil {
 		return errors.Wrap(err, "UserCommentOptMessage->execService getActionType err")
 	}
 
@@ -60,6 +61,9 @@ func (l *UserCommentOpt) execService(message messageTypes.UserCommentOptMessage)
 		CommentId:  message.CommentId,
 		ActionType: actionType,
 	})
+
+	logx.Error("UserCommentOptMessage->execService xxxxxxxxxxx")
+
 	if err != nil {
 		logx.Errorf("UserCommentOptMessage->execService  err : %v , val : %s , message:%+v", err, message)
 		return err
@@ -79,24 +83,24 @@ func (l *UserCommentOpt) getActionType(actionType int64, message messageTypes.Us
 			l.svcCtx.Config.COSConf.SecretId, l.svcCtx.Config.COSConf.SecretKey)
 
 		if err != nil {
+			logx.Errorf("UserCommentOptMessage->getActionType  err : %v , val : %s , message:%+v", err, message)
 			return 0, err
 		}
 
-		logx.Infof("Uploadermessage	:%+v", l.CommentOpt)
-
 		return model.ActionADD, nil
+
 	case model.ActionCancel:
 		// 取消评论
 		_, err := l.CommentOpt.DeleteComment(l.ctx, l.svcCtx.Config.COSConf.CommentBucket,
 			l.svcCtx.Config.COSConf.SecretId, l.svcCtx.Config.COSConf.SecretKey)
 
 		if err != nil {
+			logx.Errorf("UserCommentOptMessage->getActionType  err : %v , val : %s , message:%+v", err, message)
 			return 0, err
 		}
 
-		logx.Infof("DeleteComment :%+v", l.CommentOpt)
-
 		return model.ActionCancel, nil
+
 	default:
 		return -99, errors.New("UserCommentOptMessage->execService ActionType err")
 	}

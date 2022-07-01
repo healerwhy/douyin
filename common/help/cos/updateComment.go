@@ -44,19 +44,16 @@ func (l *UpdateComment) UploadComment(ctx context.Context, CommentBucket, Secret
 	var commentFile CommentFile
 	_ = copier.Copy(&commentFile, l)
 
-	logx.Errorf("CommentFile: %+v", commentFile)
-
 	ret, _ := json.Marshal(commentFile)
 	buf := bytes.NewBuffer(ret)
 	key := "video_id_" + fmt.Sprintf("%d/", l.VideoId) + fmt.Sprintf("user_id_%d_comment_id_%d", l.UserId, l.CommentId) + ".json"
 
-	info, err := c.Object.Put(ctx, key, buf, nil)
+	_, err := c.Object.Put(ctx, key, buf, nil)
 
 	if err != nil {
 		logx.Errorf("UploadComment error: %v", err)
 		return "", err
 	}
-	fmt.Println(info.Response)
 
 	return "", nil
 }
@@ -74,17 +71,14 @@ func (l *UpdateComment) DeleteComment(ctx context.Context, CommentBucket, Secret
 		},
 	})
 
-	logx.Errorf("delete comment : %+v", l)
-
 	key := "video_id_" + fmt.Sprintf("%d/", l.VideoId) + fmt.Sprintf("user_id_%d_comment_id_%d", l.UserId, l.CommentId) + ".json"
 
-	info, err := c.Object.Delete(ctx, key)
+	_, err := c.Object.Delete(ctx, key)
 
 	if err != nil {
 		logx.Errorf("UploadComment error: %v", err)
 		return "", err
 	}
-	fmt.Println(info.Response)
 
 	return "", nil
 }

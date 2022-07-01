@@ -175,7 +175,7 @@ func (m *defaultVideoModel) FindPageListByIdDESC(ctx context.Context, rowBuilder
 	}
 }
 
-//按照id升序分页查询数据，不支持排序
+// FindPageListByIdASC 按照id升序分页查询数据，不支持排序
 func (m *defaultVideoModel) FindPageListByIdASC(ctx context.Context, rowBuilder squirrel.SelectBuilder, preMaxId, pageSize int64) ([]*Video, error) {
 
 	if preMaxId > 0 {

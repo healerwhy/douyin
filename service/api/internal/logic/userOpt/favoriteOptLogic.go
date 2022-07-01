@@ -44,6 +44,7 @@ func (l *FavoriteOptLogic) FavoriteOpt(req *types.FavoriteOptReq) (resp *types.F
 		}, nil
 	}
 	msgTemp.UserId = l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
+
 	logx.Infof("FavoriteOpt msgTemp : %+v", msgTemp)
 
 	// 序列化

@@ -31,13 +31,16 @@ func NewPublishVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext, r *ht
 func (l *PublishVideoLogic) PublishVideo(req *types.PubVideoReq) (resp *types.PubVideoRes, err error) {
 	// 从前端获取视频
 	file, _, err := l.r.FormFile("data")
-	upLoder := new(cos.UploaderVideo)
 	authId := l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
 
-	key, err := upLoder.UploadVideo(l.ctx, file,
-		authId, l.svcCtx.Config.COSConf.MachineId,
-		l.svcCtx.Config.COSConf.VideoBucket, l.svcCtx.Config.COSConf.CoverBucket,
-		l.svcCtx.Config.COSConf.SecretId, l.svcCtx.Config.COSConf.SecretKey)
+	upLoader := cos.UploaderVideo{
+		UserId:      authId,
+		MachineId:   l.svcCtx.Config.COSConf.MachineId,
+		VideoBucket: l.svcCtx.Config.COSConf.VideoBucket,
+		SecretID:    l.svcCtx.Config.COSConf.SecretId,
+		SecretKey:   l.svcCtx.Config.COSConf.SecretKey,
+	}
+	key, err := upLoader.UploadVideo(l.ctx, file)
 	if err != nil {
 		return &types.PubVideoRes{
 			Status: types.Status{

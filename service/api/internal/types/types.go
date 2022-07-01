@@ -30,9 +30,9 @@ type CommentOptReq struct {
 }
 
 type Comment struct {
-	CommentId  int64  `json:"id" copyier:"id"`
-	User       Author `json:"user"`
-	Content    string `json:"content"`
+	CommentId int64  `json:"id" copyier:"id"`
+	User      User   `json:"user"`
+	Content   string `json:"content"`
 	CreateTime string `json:"create_date"`
 }
 
@@ -56,7 +56,7 @@ type FollowListReq struct {
 
 type FollowListRes struct {
 	Status
-	UserFollowlist []*Author `json:"user_list,omitempty"`
+	UserFollowlist []*User `json:"user_list,omitempty"`
 }
 
 type FollowerListReq struct {
@@ -65,7 +65,7 @@ type FollowerListReq struct {
 
 type FollowerListRes struct {
 	Status
-	UserFollowerlist []*Author `json:"user_list,omitempty"`
+	UserFollowerlist []*User `json:"user_list,omitempty"`
 }
 
 type CommentListReq struct {
@@ -116,7 +116,7 @@ type UserLoginRes struct {
 	IdWithTokenRes
 }
 
-type Author struct {
+type User struct {
 	UserId        int64  `json:"id"`
 	UserName      string `json:"name"`
 	FollowCount   int64  `json:"follow_count"`
@@ -130,7 +130,7 @@ type UserInfoReq struct {
 
 type UserInfoRes struct {
 	Status
-	User *Author `json:"user,omitempty"`
+	User *User `json:"user,omitempty"`
 }
 
 type PubVideoReq struct {
@@ -148,9 +148,9 @@ type GetPubVideoListReq struct {
 }
 
 type PubVideo struct {
-	Id            int64  `json:"id"`
-	Author        Author `json:"author"`
-	PlayURL       string `json:"play_url"`
+	Id      int64  `json:"id"`
+	Author  User   `json:"author"`
+	PlayURL string `json:"play_url"`
 	CoverURL      string `json:"cover_url"`
 	FavoriteCount int    `json:"favorite_count"`
 	CommentCount  int    `json:"comment_count"`
