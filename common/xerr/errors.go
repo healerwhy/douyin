@@ -27,9 +27,6 @@ func (e *CodeError) Error() string {
 	return fmt.Sprintf("ErrCode:%d，ErrMsg:%s", e.errCode, e.errMsg)
 }
 
-func NewErrCodeMsg(errCode int64, errMsg string) *CodeError {
-	return &CodeError{errCode: errCode, errMsg: errMsg}
-}
 func NewErrCode(errCode int64) *CodeError {
 	return &CodeError{errCode: errCode, errMsg: MapErrMsg(errCode)}
 }

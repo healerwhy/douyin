@@ -21,11 +21,3 @@ func MapErrMsg(errcode int64) string {
 		return "服务器开小差啦,稍后再来试一试"
 	}
 }
-
-func IsCodeErr(errcode int64) bool {
-	if _, ok := message[errcode]; ok {
-		return true
-	} else {
-		return false
-	}
-}
