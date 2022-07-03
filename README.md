@@ -37,12 +37,6 @@ Mikaelemmmm大佬人超级棒~！ 谢谢~！正如他的签名：“做人但求
 [cos-go-sdk-v5](https://github.com/tencentyun/cos-go-sdk-v5) <br>
 腾讯云的技术客服超级耐心~！谢谢~！
 
-[asynq](https://github.com/hibiken/asynq)
-
-[sonyflake](https://github.com/sony/sonyflake)
-
-[golang-jwt](https://github.com/golang-jwt/jwt)
-
 ```
 最后的最后：
     感谢字节跳动的所有工作人员无私的辛苦付出，祝青训营越办越好~
