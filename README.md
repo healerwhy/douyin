@@ -28,7 +28,7 @@
 
 # 写在最后
 感谢以下项目让我学到了很多东西： <br>
-[go-zero](https://github.com/zeromicro/go-zero) <br>
+[go-zero](https://github.com/zeromicro/go-zero) [万总b站账号](https://space.bilibili.com/434639159?spm_id_from=333.337.search-card.all.click)<br>
 go-zero真的是超棒的项目！一定要加万总的社群，疯狂安利！大佬云集！
 向万总和安前松前辈学到了很多东西！谢谢~！每次深夜去找他们请教问题，两位大佬也会很快回复我的消息，真的超感动！
 
