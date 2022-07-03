@@ -26,20 +26,25 @@ func NewGetVideoCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 
 func (l *GetVideoCommentLogic) GetVideoComment(in *userOptPb.GetVideoCommentReq) (*userOptPb.GetVideoCommentReqResp, error) {
 
-	var downloadHelper cos.DownloadComment
 	key := fmt.Sprintf("video_id_%d/", in.VideoId)
-	comments, err := downloadHelper.DownloadComment(l.ctx, key, l.svcCtx.Config.COSConf.CommentBucket, l.svcCtx.Config.COSConf.SecretId, l.svcCtx.Config.COSConf.SecretKey)
+	downloadHelper := cos.DownloadComment{
+		Key:           key,
+		CommentBucket: l.svcCtx.Config.COSConf.CommentBucket,
+		SecretID:      l.svcCtx.Config.COSConf.SecretId,
+		SecretKey:     l.svcCtx.Config.COSConf.SecretKey,
+	}
+	comments, err := downloadHelper.DownloadComment(l.ctx)
 
 	var commentList []*userOptPb.Comment
 	for _, v := range comments {
 		var comment userOptPb.Comment
-	_:
-		copier.Copy(&comment, v)
+		_ = copier.Copy(&comment, v)
 		comment.Content = v.Content
 		commentList = append(commentList, &comment)
 	}
 
 	if err != nil {
+		logx.Errorf("get video comment list fail %s", err.Error())
 		return nil, err
 	}
 

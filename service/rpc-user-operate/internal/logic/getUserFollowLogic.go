@@ -30,6 +30,7 @@ func (l *GetUserFollowLogic) GetUserFollow(in *userOptPb.GetUserFollowReq) (*use
 		whereBuilder := l.svcCtx.UserFollowModel.RowBuilder().Where(squirrel.Eq{"user_id": in.UserId, "follow_id": in.AuthIds}).Where(squirrel.NotEq{"is_follow": 0})
 		res, err := l.svcCtx.UserFollowModel.FindAll(l.ctx, whereBuilder, "")
 		if err != nil {
+			logx.Errorf("GetUserFollow err:%s", err.Error())
 			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFollow  err , id:%d , err:%v", in.UserId, err)
 		}
 
@@ -45,11 +46,12 @@ func (l *GetUserFollowLogic) GetUserFollow(in *userOptPb.GetUserFollowReq) (*use
 			UserFollowList: userFollowList,
 		}, nil
 
-	} else { // 把该用户的所以关注者找出来
+	} else { // 把该用户的所有关注者找出来
 		whereBuilder := l.svcCtx.UserFollowModel.RowBuilder().Where("user_id = ? and is_follow != 0 ", in.UserId)
 
 		res, err := l.svcCtx.UserFollowModel.FindAll(l.ctx, whereBuilder, "user_id ASC")
 		if err != nil {
+			logx.Errorf("GetUserFollowLogic GetUserFollow err: %s", err.Error())
 			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFollow  err , id:%d , err:%v", in.UserId, err)
 		}
 

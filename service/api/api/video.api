@@ -2,15 +2,12 @@ syntax = "v1"
 
 info(
 	title: "video"
-	desc: "/douyin/publish/action/---/douyin/publish/list/"
 	author: "healer"
 )
 
 import "user.api"
 
 type PubVideoReq {
-	// 以及文件类型
-	////	Data  []byte `form:"data"`
 	Token string `form:"token"`
 	Title string `form:"title"`
 }

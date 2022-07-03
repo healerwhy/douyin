@@ -32,6 +32,7 @@ func (l *UserRegisterLogic) UserRegister(req *types.UserRegisterReq) (resp *type
 		Password: req.Password,
 	})
 	if err != nil {
+		logx.Errorf("register failed: %s", err.Error())
 		return &types.UserRegisterRes{
 			Status: types.Status{
 				Code: xerr.SECRET_ERROR,

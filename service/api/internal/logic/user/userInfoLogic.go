@@ -25,16 +25,17 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 	}
 }
 
-// UserInfo 通过token获得userId，再通过userId获得用户信息
+// UserInfo 登陆后调用此接口拉取个人信息
 func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRes, err error) {
 	info, err := l.svcCtx.UserInfoRpcClient.Info(l.ctx, &userinfoservice.UserInfoReq{
 		UserId: req.UserId,
 	})
 	if err != nil {
+		logx.Errorf("get user info failed: %v", err.Error())
 		return &types.UserInfoRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "get user info failed" + err.Error(),
+				Msg:  "get user info failed",
 			},
 		}, nil
 	}

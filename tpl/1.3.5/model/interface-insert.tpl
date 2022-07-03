@@ -1,0 +1,2 @@
+Insert(ctx context.Context, session sqlx.Session,data *{{.upperStartCamelObject}}) (sql.Result,error)
+InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, userId, objId, opt int64) (sql.Result, error)

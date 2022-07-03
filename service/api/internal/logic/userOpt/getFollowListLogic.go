@@ -32,10 +32,11 @@ func (l *GetFollowListLogic) GetFollowList(req *types.FollowListReq) (resp *type
 		UserId: req.UserId,
 	})
 	if err != nil {
+		logx.Errorf("get user follow list fail %s", err.Error())
 		return &types.FollowListRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "get user follow list fail " + err.Error(),
+				Msg:  "get user follow list fail ",
 			},
 		}, nil
 	}
@@ -45,8 +46,6 @@ func (l *GetFollowListLogic) GetFollowList(req *types.FollowListReq) (resp *type
 		followsIdArr = append(followsIdArr, k)
 	}
 
-	logx.Errorf("followsIdArr: %v", followsIdArr)
-
 	var userList []*types.User // 最终返回的关注者列表
 
 	if followsIdMap != nil {
@@ -55,6 +54,7 @@ func (l *GetFollowListLogic) GetFollowList(req *types.FollowListReq) (resp *type
 			AuthIds: followsIdArr,
 		})
 		if err != nil {
+			logx.Errorf("get user follow list fail %s", err.Error())
 			return &types.FollowListRes{
 				Status: types.Status{
 					Code: xerr.ERR,

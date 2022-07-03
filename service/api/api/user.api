@@ -4,7 +4,6 @@ syntax = "v1"
 info(
 	author: "healer"
 	date:   "2022-6-7"
-	desc:   "api语法示例及语法说明"
 )
 
 //  common 请求

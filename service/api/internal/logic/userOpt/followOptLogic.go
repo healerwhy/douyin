@@ -39,6 +39,7 @@ func (l *FollowOptLogic) FollowOpt(req *types.FollowOptReq) (resp *types.FollowO
 	msgTemp.ActionType = l.getActionType(req.ActionType)
 
 	if msgTemp.ActionType == -99 {
+		logx.Errorf("error actionType : %+v", req.ActionType)
 		return &types.FollowOptRes{
 			Status: types.Status{
 				Code: xerr.ERR,
@@ -46,18 +47,18 @@ func (l *FollowOptLogic) FollowOpt(req *types.FollowOptReq) (resp *types.FollowO
 			},
 		}, nil
 	}
-	
-	logx.Infof("FollowOpt msgTemp : %+v", msgTemp)
 
 	// 序列化
 	msg, err := json.Marshal(msgTemp)
 	if err != nil {
+		logx.Errorf("json.Marshal err : %s", err.Error())
 		return nil, errors.Wrapf(err, " json.Marshal err")
 	}
 
 	// 向消息队列发送消息
 	err = l.svcCtx.FollowOptMsgProducer.Push(string(msg))
 	if err != nil {
+		logx.Errorf("FollowOptMsgProducer.Push err : %s", err.Error())
 		return &types.FollowOptRes{
 			Status: types.Status{
 				Code: xerr.ERR,

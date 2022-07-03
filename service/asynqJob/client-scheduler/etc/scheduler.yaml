@@ -1,0 +1,12 @@
+Name: client-scheduler
+
+Mode: dev
+
+Log:
+  ServiceName: client-scheduler
+  Encoding: plain
+
+Redis:
+  Host: localhost:6379
+  Type: node
+  Pass: password

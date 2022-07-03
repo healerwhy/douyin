@@ -6,6 +6,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
+// KqConfig 用于发现kafka的Topic
 type KqConfig struct {
 	Brokers []string
 	Topic   string

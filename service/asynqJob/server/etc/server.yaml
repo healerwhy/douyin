@@ -1,0 +1,21 @@
+Name: asynq-server
+Mode: dev
+Log:
+  ServiceName: asynq-server
+  Encoding: plain
+
+Redis:
+  Host: localhost:6379
+  Type: node
+  Pass: password
+
+UserOptServiceConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: useroptservice.rpc
+  NonBlock: true
+
+RedisCacheConf:
+  Host: localhost:6379
+  Pass: password

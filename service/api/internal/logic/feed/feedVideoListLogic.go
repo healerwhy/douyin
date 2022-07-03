@@ -50,6 +50,19 @@ func getAuthIdsAndVideoIds(VideoPubList []*videoSvcPb.Video) (authIds []int64, v
 	return authIds, videoIds
 }
 
+/*
+	1. 首先判断前端是否传递了 LastTime 作为从哪个时间点开始查询
+	2. 如果没有传递 LastTime 则默认从当前时间点开始查询
+	3. 如果传递了 LastTime 则从 LastTime 开始查询
+	4. 调用VideoSvcRpcClient.FeedVideos 获取视频列表
+	5. 调用UserInfoRpcClient.GetUserInfo 获取用户信息
+
+	如果没有token那么就直接返回视频列表了
+
+	如果有token那么就需要判断当前用户是否对视频列表里的视频点赞过、对视频的作者是否关注
+
+*/
+
 func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *types.FeedVideoListRes, err error) {
 	// 查看LastTime是否存在 不存在就直接从video里的 拉取最多30条视频
 	var LastTime int64
@@ -72,12 +85,11 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 		}, nil
 	}
 
-	/*
-		如果存在作者或者说有视频 才回去关注是否对视频点赞 对作者关注
-	*/
 	var videoList []*types.PubVideo // 最终返回的视频列表
 
 	if len(videos.VideoPubList) > 0 {
+
+		// 获取视频的作者Id
 		authIds, videoIds := getAuthIdsAndVideoIds(videos.VideoPubList)
 
 		// 查询所有视频的的作者信息
@@ -85,10 +97,11 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 			AuthIds: authIds,
 		})
 		if err != nil {
+			logx.Errorf("get authors info fail %s", err.Error())
 			return &types.FeedVideoListRes{
 				Status: types.Status{
 					Code: xerr.ERR,
-					Msg:  "get authors info fail " + err.Error(),
+					Msg:  "get authors info fail",
 				},
 			}, nil
 		}
@@ -109,7 +122,7 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 					resp = &types.FeedVideoListRes{
 						Status: types.Status{
 							Code: xerr.ERR,
-							Msg:  "get user favorite video relation fail " + err.Error(),
+							Msg:  "get user favorite video relation fail ",
 						},
 					}
 					return err
@@ -126,7 +139,7 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 					resp = &types.FeedVideoListRes{
 						Status: types.Status{
 							Code: xerr.ERR,
-							Msg:  "get user follow author relation fail " + err.Error(),
+							Msg:  "get user follow author relation fail ",
 						},
 					}
 					return err
@@ -134,9 +147,12 @@ func (l *FeedVideoListLogic) FeedVideoList(req *types.FeedVideoListReq) (resp *t
 				return nil
 			})
 			if err != nil {
+				logx.Errorf("server error %s", err.Error())
+
 				return resp, nil
 			}
 
+			// 组装数据
 			for _, v := range videos.VideoPubList {
 				var video types.PubVideo
 				_ = copier.Copy(&video, v)

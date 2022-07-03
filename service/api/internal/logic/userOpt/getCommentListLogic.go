@@ -30,29 +30,26 @@ func NewGetCommentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetCommentListLogic) GetCommentList(req *types.CommentListReq) (resp *types.CommentListRes, err error) {
-	// todo: add your logic here and delete this line
 	// 1.获得视频里所有的点赞内容
 	// 2.获得点赞用的用户信息，follow情况
 	comments, err := l.svcCtx.UserOptSvcRpcClient.GetVideoComment(l.ctx, &useroptservice.GetVideoCommentReq{
 		VideoId: req.VideoId,
 	})
 	if err != nil {
+		logx.Errorf("get video comment list fail %s", err.Error())
 		return &types.CommentListRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "get video comment list fail " + err.Error(),
+				Msg:  "get video comment list fail",
 			},
 		}, nil
 	}
-
-	logx.Errorf("%+v", comments)
 
 	var commentList []*types.Comment // 最终返回的视频列表
 
 	// 当前的用户id
 	userId := l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
 	if comments != nil {
-
 		// 把视频里的作者的信息找出来 并去重
 		var authIds = make([]int64, 0, len(comments.CommentList))
 		for _, v := range comments.CommentList {
@@ -63,8 +60,6 @@ func (l *GetCommentListLogic) GetCommentList(req *types.CommentListReq) (resp *t
 				authIds = append(authIds, v.UserId)
 			}
 		}
-
-		logx.Errorf("%+v", authIds)
 
 		var authsInfo *userInfoPb.AuthsInfoResp
 		var userFollowList *useroptservice.GetUserFollowResp
@@ -77,7 +72,7 @@ func (l *GetCommentListLogic) GetCommentList(req *types.CommentListReq) (resp *t
 				resp = &types.CommentListRes{
 					Status: types.Status{
 						Code: xerr.ERR,
-						Msg:  "get author list fail " + err.Error(),
+						Msg:  "get author list fail",
 					},
 				}
 				return err
@@ -93,7 +88,7 @@ func (l *GetCommentListLogic) GetCommentList(req *types.CommentListReq) (resp *t
 				resp = &types.CommentListRes{
 					Status: types.Status{
 						Code: xerr.ERR,
-						Msg:  "get user follow list fail " + err.Error(),
+						Msg:  "get user follow list fail",
 					},
 				}
 				return err
@@ -101,7 +96,8 @@ func (l *GetCommentListLogic) GetCommentList(req *types.CommentListReq) (resp *t
 			return nil
 		})
 		if err != nil {
-			return resp, err
+			logx.Errorf("get user follow list fail %s", err.Error())
+			return resp, nil
 		}
 
 		for _, v := range comments.CommentList {

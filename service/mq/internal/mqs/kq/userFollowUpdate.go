@@ -52,8 +52,8 @@ func (l *UserFollowOpt) execService(message messageTypes.UserFollowOptMessage) e
 	_ = copier.Copy(&req, &message)
 
 	// 构造redis的数据
-	dataKey := fmt.Sprintf(globalkey.FollowTpl, message.FollowId)
-	followSetVal := fmt.Sprintf(globalkey.FollowTpl, message.FollowId)
+	dataKey := fmt.Sprintf(globalkey.FollowSetValTpl, message.FollowId)
+	followSetVal := fmt.Sprintf(globalkey.FollowSetValTpl, message.FollowId)
 	dataVal := fmt.Sprintf(globalkey.ExistDataValTpl, message.UserId, message.ActionType)
 
 	// 消息取出来之后无非是点赞或者取消点赞 0，1，那么打到redis也是0，1

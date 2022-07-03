@@ -30,6 +30,7 @@ func (l *GetUserFollowerLogic) GetUserFollower(in *userOptPb.GetUserFollowerReq)
 
 	res, err := l.svcCtx.UserFollowModel.FindAll(l.ctx, whereBuilder, "user_id ASC")
 	if err != nil {
+		logx.Errorf("GetUserFollowerLogic GetUserFollower err: %s", err.Error())
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFollower  err , id:%d , err:%v", in.UserId, err)
 	}
 

@@ -36,7 +36,7 @@ func (l *GetFollowerListLogic) GetFollowerList(req *types.FollowerListReq) (resp
 		return &types.FollowerListRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "get user follower list fail " + err.Error(),
+				Msg:  "get user follower list fail ",
 			},
 		}, nil
 	}
@@ -49,24 +49,33 @@ func (l *GetFollowerListLogic) GetFollowerList(req *types.FollowerListReq) (resp
 	var userList []*types.User // 最终返回的关注者列表
 
 	if followersIdMap != nil {
-
+		// 查看我是否关注了粉丝
 		followersInfo, err := l.svcCtx.UserInfoRpcClient.AuthsInfo(l.ctx, &userInfoPb.AuthsInfoReq{
 			AuthIds: followersIdArr,
 		})
 		if err != nil {
+			logx.Errorf("get AuthsInfo list fail %s", err.Error())
 			return &types.FollowerListRes{
 				Status: types.Status{
 					Code: xerr.ERR,
-					Msg:  "get AuthsInfo list fail " + err.Error(),
+					Msg:  "get AuthsInfo list fail",
 				},
 			}, nil
 		}
 
-		// 看粉丝有没有关注我
 		allFollowersMap, err := l.svcCtx.UserOptSvcRpcClient.GetUserFollow(l.ctx, &useroptservice.GetUserFollowReq{
 			UserId:  req.UserId,
 			AuthIds: followersIdArr,
 		})
+		if err != nil {
+			logx.Errorf("get user follow list fail %s", err.Error())
+			return &types.FollowerListRes{
+				Status: types.Status{
+					Code: xerr.ERR,
+					Msg:  "get user follow list fail",
+				},
+			}, nil
+		}
 
 		for _, v := range followersInfo.Auths {
 			var user types.User

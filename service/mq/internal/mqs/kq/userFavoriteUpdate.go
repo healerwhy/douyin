@@ -53,8 +53,8 @@ func (l *UserFavoriteOpt) execService(message messageTypes.UserFavoriteOptMessag
 	_ = copier.Copy(&req, &message)
 
 	// 构造redis的数据
-	dataKey := fmt.Sprintf(globalkey.FavoriteTpl, message.VideoId)
-	favoriteSetVal := fmt.Sprintf(globalkey.FavoriteTpl, message.VideoId)
+	dataKey := fmt.Sprintf(globalkey.FavoriteSetValTpl, message.VideoId)
+	favoriteSetVal := fmt.Sprintf(globalkey.FavoriteSetValTpl, message.VideoId)
 	dataVal := fmt.Sprintf(globalkey.ExistDataValTpl, message.UserId, message.ActionType)
 
 	// 消息取出来之后无非是点赞或者取消点赞 0，1，那么打到redis也是0，1

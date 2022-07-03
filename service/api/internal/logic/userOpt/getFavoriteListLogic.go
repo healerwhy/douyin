@@ -34,10 +34,11 @@ func (l *GetFavoriteListLogic) GetFavoriteList(req *types.FavoriteListReq) (resp
 		UserId: req.UserId,
 	})
 	if err != nil {
+		logx.Errorf("GetFavoriteListLogic.GetFavoriteList error: %s", err.Error())
 		return &types.FavoriteListRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "get user favorite list fail " + err.Error(),
+				Msg:  "get user favorite list fail ",
 			},
 		}, nil
 	}
@@ -51,10 +52,11 @@ func (l *GetFavoriteListLogic) GetFavoriteList(req *types.FavoriteListReq) (resp
 			VideoIdArr: videosId.UserFavoriteArr,
 		})
 		if err != nil {
+			logx.Errorf("GetFavoriteListLogic.GetFavoriteList error: %s", err.Error())
 			return &types.FavoriteListRes{
 				Status: types.Status{
 					Code: xerr.ERR,
-					Msg:  "get video list fail " + err.Error(),
+					Msg:  "get video list fail ",
 				},
 			}, nil
 		}
@@ -106,6 +108,7 @@ func (l *GetFavoriteListLogic) GetFavoriteList(req *types.FavoriteListReq) (resp
 			return nil
 		})
 		if err != nil {
+			logx.Errorf("GetFavoriteListLogic error: %s", err.Error())
 			return resp, err
 		}
 

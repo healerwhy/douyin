@@ -2,7 +2,6 @@ package logic
 
 import (
 	"douyin/service/asynqJob/server/jobtype"
-	"fmt"
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -16,7 +15,7 @@ func (l *MqueueScheduler) GetUserFavoriteStatusScheduler() {
 	if err != nil {
 		logx.WithContext(l.ctx).Errorf("!!!MqueueSchedulerErr!!! ====> 【ScheduleGetUserFavoriteStatus】 registered  err:%+v , task:%+v", err, task)
 	}
-	fmt.Printf("【ScheduleGetUserFavoriteStatus】 registered an  entry: %q \n", entryID)
+	logx.Infof("【ScheduleGetUserFavoriteStatus】 registered an  entry: %q \n", entryID)
 }
 
 func (l *MqueueScheduler) GetUserFollowStatusScheduler() {
@@ -27,5 +26,5 @@ func (l *MqueueScheduler) GetUserFollowStatusScheduler() {
 	if err != nil {
 		logx.WithContext(l.ctx).Errorf("!!!MqueueSchedulerErr!!! ====> 【ScheduleGetUserFollowStatus】 registered  err:%+v , task:%+v", err, task)
 	}
-	fmt.Printf("【ScheduleGetUserFollowStatus】 registered an  entry: %q \n", entryID)
+	logx.Infof("【ScheduleGetUserFollowStatus】 registered an  entry: %q \n", entryID)
 }

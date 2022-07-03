@@ -24,24 +24,25 @@ func NewUserLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLog
 	}
 }
 
-// UserLogin 用户登陆，生成token
-// 然后通过username获得用户密码，然后比对密码
+// UserLogin 用户登陆
+// 通过username获得用户密码，然后比对密码
 // token 先查redis 是否存在，如果存在，则直接返回，如果不存在，则生成token，并存入redis
 // 并返回userId，token
 func (l *UserLoginLogic) UserLogin(req *types.UserLoginReq) (resp *types.UserLoginRes, err error) {
-	// todo: add your logic here and delete this line
 	res, err := l.svcCtx.UserInfoRpcClient.Login(l.ctx, &userinfoservice.LoginReq{
 		UserName: req.UserName,
 		Password: req.Password,
 	})
 	if err != nil {
+		logx.Errorf("login failed: %v", err.Error())
 		return &types.UserLoginRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "login failed" + err.Error(),
+				Msg:  "login failed",
 			},
 		}, nil
 	}
+
 	return &types.UserLoginRes{
 		Status: types.Status{
 			Code: xerr.OK,

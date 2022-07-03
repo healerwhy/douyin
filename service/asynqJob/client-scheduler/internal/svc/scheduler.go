@@ -2,8 +2,8 @@ package svc
 
 import (
 	"douyin/service/asynqJob/client-scheduler/internal/config"
-	"fmt"
 	"github.com/hibiken/asynq"
+	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
@@ -18,7 +18,7 @@ func newScheduler(c config.Config) *asynq.Scheduler {
 		}, &asynq.SchedulerOpts{
 			Location: location,
 			EnqueueErrorHandler: func(task *asynq.Task, opts []asynq.Option, err error) {
-				fmt.Printf("Scheduler EnqueueErrorHandler <<<<<<<===>>>>> err : %+v , task : %+v", err, task)
+				logx.Infof("Scheduler EnqueueErrorHandler <<<<<<<===>>>>> err : %+v , task : %+v", err, task)
 			},
 		})
 }

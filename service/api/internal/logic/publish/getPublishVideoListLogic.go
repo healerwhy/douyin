@@ -31,6 +31,7 @@ func (l *GetPublishVideoListLogic) GetPublishVideoList(req *types.GetPubVideoLis
 		AuthId: req.UserId,
 	})
 	if err != nil {
+		logx.Errorf("get publish video list fail %s", err.Error())
 		return &types.GetPubVideoListRes{
 			Status: types.Status{
 				Code: xerr.ERR,
@@ -38,7 +39,17 @@ func (l *GetPublishVideoListLogic) GetPublishVideoList(req *types.GetPubVideoLis
 			},
 		}, nil
 	}
-	// 获得本人信息
+
+	// 如果没有视频直接返回
+	if len(res.VideoPubList) == 0 {
+		return &types.GetPubVideoListRes{
+			Status: types.Status{
+				Code: xerr.OK,
+			},
+		}, nil
+	}
+
+	// 获得本人的信息
 	authInfo, err := l.svcCtx.UserInfoRpcClient.Info(l.ctx, &userInfoPb.UserInfoReq{
 		UserId: req.UserId,
 	})
@@ -50,21 +61,15 @@ func (l *GetPublishVideoListLogic) GetPublishVideoList(req *types.GetPubVideoLis
 			},
 		}, nil
 	}
-	if len(res.VideoPubList) == 0 {
-		return &types.GetPubVideoListRes{
-			Status: types.Status{
-				Code: xerr.OK,
-				Msg:  "no publish video",
-			},
-		}, nil
-	}
 
+	// 整合数据
 	// 将rpc返回的videoPubList转换为api返回的videoPubList
 	var videos []*types.PubVideo
 	for _, v := range res.VideoPubList {
 		var video types.PubVideo
 		_ = copier.Copy(&video, v)
 		_ = copier.Copy(&video.Author, authInfo.User)
+
 		videos = append(videos, &video)
 	}
 

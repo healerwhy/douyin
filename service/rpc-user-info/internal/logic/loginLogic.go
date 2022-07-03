@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	myToken "douyin/common/help/token"
+	"douyin/common/xerr"
 	"douyin/service/rpc-user-info/internal/svc"
 	"douyin/service/rpc-user-info/userInfoPb"
 	"github.com/pkg/errors"
@@ -32,22 +33,24 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 // 通过userId查 redis
 // 如果存在，则直接返回，如果不存在，则生成token，并存入redis
 func (l *LoginLogic) Login(in *userInfoPb.LoginReq) (*userInfoPb.LoginResp, error) {
-	// todo: add your logic here and delete this line
 	user, err := l.svcCtx.UserModel.FindOneByUserName(l.ctx, in.UserName)
 	if err != nil {
+		logx.Errorf("find user failed, err: %s", err.Error())
 		return nil, errors.Wrap(err, "find user failed")
 	}
 
 	// 校验密码
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(in.Password))
 	if err != nil {
-		return nil, errors.Wrapf(err, "password not match")
+		logx.Errorf("password not match, err: %s", err.Error())
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "password not match")
 	}
 
-	// 通过userId查 redis
-	token, err := l.svcCtx.RedisCache.GetCtx(l.ctx, strconv.FormatInt(user.UserId, 10))
+	// 通过userId查 redis 是否有此token
+	token, err := l.svcCtx.RedisCache.GetCtx(l.ctx, "token:"+strconv.FormatInt(user.UserId, 10))
 	if err != nil {
-		return nil, errors.Wrap(err, "get token from redis failed")
+		logx.Errorf("get token from redis failed, err: %s", err.Error())
+		return nil, errors.Wrap(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "get token from redis failed")
 	}
 	// 如果存在，则直接返回
 	if token != "" {
@@ -61,9 +64,10 @@ func (l *LoginLogic) Login(in *userInfoPb.LoginReq) (*userInfoPb.LoginResp, erro
 	var genToken myToken.GenToken
 	now := time.Now()
 	token, err = genToken.GenToken(now, user.UserId, nil)
-	_, err = l.svcCtx.RedisCache.SetnxExCtx(l.ctx, strconv.FormatInt(user.UserId, 10), token, 60*60*24)
+	_, err = l.svcCtx.RedisCache.SetnxExCtx(l.ctx, "token:"+strconv.FormatInt(user.UserId, 10), token, myToken.AccessExpire)
 	if err != nil {
-		return nil, errors.Wrapf(err, "set token to redis error")
+		logx.Errorf("set token to redis failed, err: %s", err.Error())
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.TOKEN_GENERATE_ERROR), "set token to redis error")
 	}
 
 	return &userInfoPb.LoginResp{

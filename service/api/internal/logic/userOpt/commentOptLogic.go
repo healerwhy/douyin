@@ -37,14 +37,17 @@ func (l *CommentOptLogic) CommentOpt(req *types.CommentOptReq) (resp *types.Comm
 	msgTemp, status, err := l.getActionType(req)
 
 	if msgTemp.ActionType == messageTypes.ActionErr || err != nil {
+		logx.Errorf("CommentOptLogic CommentOpt err: %s", err.Error())
 		return status, nil
 	}
+
 	if msgTemp.ActionType == 1 {
 		// 拉取发布消息的用户信息
 		userInfo, err := l.svcCtx.UserInfoRpcClient.Info(l.ctx, &userInfoPb.UserInfoReq{
 			UserId: msgTemp.UserId,
 		})
 		if err != nil {
+			logx.Errorf("CommentOptLogic CommentOpt err: %s", err.Error())
 			return &types.CommentOptRes{
 				Status: types.Status{
 					Code: xerr.ERR,
@@ -89,7 +92,7 @@ func (l *CommentOptLogic) getActionType(req *types.CommentOptReq) (*messageTypes
 	switch req.ActionType { // 方便扩展
 	case messageTypes.ActionADD:
 		msgTemp.UserId = l.ctx.Value(myToken.CurrentUserId("CurrentUserId")).(int64)
-		msgTemp.CreateDate = time.Now().Format("01-02")
+		msgTemp.CreateDate = time.Now().Format("01-01")
 		msgTemp.ActionType = 1
 		var genId cos.GenSnowFlake
 		id, _ := genId.GenSnowFlake(1)
@@ -118,6 +121,7 @@ func (l *CommentOptLogic) getActionType(req *types.CommentOptReq) (*messageTypes
 			},
 		}, errors.Wrapf(err, " json.Marshal err")
 	}
+
 	// 向消息队列发送消息
 	err = l.svcCtx.CommentOptMsgProducer.Push(string(msg))
 	if err != nil {

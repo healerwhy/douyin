@@ -33,7 +33,8 @@ func (l *AuthsInfoLogic) AuthsInfo(in *userInfoPb.AuthsInfoReq) (*userInfoPb.Aut
 	auths, err := l.svcCtx.UserModel.FindAll(l.ctx, whereBuilder, "user_id ASC")
 
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrMsg("get auths info fail"), "get auths info fail FindAll  err : %v , authIds:%v", err, in.AuthIds)
+		logx.Errorf("get auths info fail FindAll  err : %v", err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get auths info fail FindAll  err : %v , authIds:%v", err, in.AuthIds)
 	}
 
 	var authsInfo map[int64]*userInfoPb.User

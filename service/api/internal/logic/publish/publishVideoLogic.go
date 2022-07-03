@@ -42,6 +42,7 @@ func (l *PublishVideoLogic) PublishVideo(req *types.PubVideoReq) (resp *types.Pu
 	}
 	key, err := upLoader.UploadVideo(l.ctx, file)
 	if err != nil {
+		logx.Errorf("upload video failed: %s", err.Error())
 		return &types.PubVideoRes{
 			Status: types.Status{
 				Code: xerr.ERR,
@@ -58,10 +59,11 @@ func (l *PublishVideoLogic) PublishVideo(req *types.PubVideoReq) (resp *types.Pu
 		CoverURL: l.svcCtx.Config.COSConf.CoverBucket + "/" + key + "_0.jpg",
 	})
 	if err != nil {
+		logx.Errorf("publish video failed: %s", err.Error())
 		return &types.PubVideoRes{
 			Status: types.Status{
 				Code: xerr.ERR,
-				Msg:  "publish video failed",
+				Msg:  "server database err",
 			},
 		}, nil
 	}

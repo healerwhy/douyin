@@ -33,7 +33,7 @@ func (l *UpdateFollowStatusLogic) UpdateFollowStatus(in *userOptPb.UpdateFollowS
 	err := l.svcCtx.UserFollowModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
 		_, err := l.svcCtx.UserFollowModel.InsertOrUpdate(l.ctx, session, field, "is_follow", in.UserId, in.FollowId, in.ActionType)
 		if err != nil {
-			logx.Errorf("UpdateFollowStatus------->InsertOrUpdate err : %v\n", err)
+			logx.Errorf("UpdateFollowStatus------->InsertOrUpdate err : %s", err.Error())
 			return err
 		}
 
@@ -41,14 +41,14 @@ func (l *UpdateFollowStatusLogic) UpdateFollowStatus(in *userOptPb.UpdateFollowS
 		action := l.getActionType(in.ActionType)
 		_, err = l.svcCtx.UserModel.UpdateStatus(l.ctx, session, "follow_count", "user_id", action, in.UserId)
 		if err != nil {
-			logx.Errorf("UpdateFollowStatus------->UpdateStatus err : %v\n", err)
+			logx.Errorf("UpdateFollowStatus------->UpdateStatus err : %s", err.Error())
 			return err
 		}
 
 		// 更新被关注者的粉丝数
 		_, err = l.svcCtx.UserModel.UpdateStatus(l.ctx, session, "follower_count", "user_id", action, in.FollowId)
 		if err != nil {
-			logx.Errorf("UpdateFollowStatus------->Update follower Status err : %v\n", err)
+			logx.Errorf("UpdateFollowStatus------->Update follower Status err : %v", err.Error())
 			return err
 		}
 		return nil

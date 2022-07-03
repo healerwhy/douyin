@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"douyin/common/help/token"
+	"douyin/common/xerr"
 	"douyin/service/rpc-user-info/model"
 	"douyin/service/rpc-user-info/userInfoPb"
 	"github.com/pkg/errors"
@@ -30,9 +31,10 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 
 // Register -----------------------user-----------------------
 func (l *RegisterLogic) Register(in *userInfoPb.RegisterReq) (*userInfoPb.RegisterResp, error) {
-	// todo: add your logic here and delete this line
+
 	bytes, err := bcrypt.GenerateFromPassword([]byte(in.Password), 12)
 	if err != nil {
+		logx.Errorf("generate password failed, err:%s", err.Error())
 		return nil, err
 	}
 	res, err := l.svcCtx.UserModel.Insert(l.ctx, nil, &model.User{
@@ -40,7 +42,8 @@ func (l *RegisterLogic) Register(in *userInfoPb.RegisterReq) (*userInfoPb.Regist
 		PasswordDigest: string(bytes),
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "req: %+v insert error", in)
+		logx.Errorf("insert user failed, err: %s", err.Error())
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "insert user failed, user_name: %s", in.UserName)
 	}
 	userId, _ := res.LastInsertId()
 
@@ -48,12 +51,16 @@ func (l *RegisterLogic) Register(in *userInfoPb.RegisterReq) (*userInfoPb.Regist
 	now := time.Now()
 	tokenString, err := genToken.GenToken(now, userId, nil)
 	if err != nil {
+		logx.Errorf("gen token error: %s", err.Error())
 		return nil, errors.Wrapf(err, "genToken error")
 	}
-	_, err = l.svcCtx.RedisCache.SetnxExCtx(l.ctx, strconv.FormatInt(userId, 10), tokenString, 24*3600)
+
+	_, err = l.svcCtx.RedisCache.SetnxExCtx(l.ctx, "token:"+strconv.FormatInt(userId, 10), tokenString, token.AccessExpire)
 	if err != nil {
-		return nil, errors.Wrapf(err, "set tokenString to redis error")
+		logx.Errorf("set token to redis error: %s", err.Error())
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.TOKEN_GENERATE_ERROR), "genToken error")
 	}
+
 	return &userInfoPb.RegisterResp{
 		UserId: userId,
 		Token:  tokenString,

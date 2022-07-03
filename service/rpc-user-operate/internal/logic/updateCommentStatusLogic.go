@@ -42,7 +42,7 @@ func (l *UpdateCommentStatusLogic) UpdateCommentStatus(in *userOptPb.UpdateComme
 		// InsertOrUpdate(ctx context.Context, session sqlx.Session, field string, setStatus string, videoId, objId, userId, opt int64)
 		_, err := l.svcCtx.UserCommentModel.InsertOrUpdate(l.ctx, session, field, "del_state", in.VideoId, in.CommentId, in.UserId, action)
 		if err != nil {
-			logx.Errorf("UpdateCommentStatus------->InsertOrUpdate err : %v\n", err)
+			logx.Errorf("UpdateCommentStatus------->InsertOrUpdate err : %s", err.Error())
 			return err
 		}
 
@@ -50,7 +50,7 @@ func (l *UpdateCommentStatusLogic) UpdateCommentStatus(in *userOptPb.UpdateComme
 		actionType := l.getActionType(in.ActionType)
 		_, err = l.svcCtx.VideoModel.UpdateStatus(l.ctx, session, "comment_count", "id", actionType, in.VideoId)
 		if err != nil {
-			logx.Errorf("UpdateCommentStatus------->UpdateStatus err : %v\n", err)
+			logx.Errorf("UpdateCommentStatus------->UpdateStatus err : %s", err.Error())
 			return err
 		}
 

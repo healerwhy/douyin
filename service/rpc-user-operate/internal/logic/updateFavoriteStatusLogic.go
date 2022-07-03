@@ -32,7 +32,7 @@ func (l *UpdateFavoriteStatusLogic) UpdateFavoriteStatus(in *userOptPb.UpdateFav
 	err := l.svcCtx.UserFavoriteModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
 		_, err := l.svcCtx.UserFavoriteModel.InsertOrUpdate(l.ctx, session, field, "is_favorite", in.UserId, in.VideoId, in.ActionType)
 		if err != nil {
-			logx.Errorf("UpdateFavoriteStatusLogic------->InsertOrUpdate err : %v\n", err)
+			logx.Errorf("UpdateFavoriteStatusLogic------->InsertOrUpdate err : %v", err.Error())
 			return err
 		}
 
@@ -40,7 +40,7 @@ func (l *UpdateFavoriteStatusLogic) UpdateFavoriteStatus(in *userOptPb.UpdateFav
 		action := l.getActionType(in.ActionType)
 		_, err = l.svcCtx.VideoModel.UpdateStatus(l.ctx, session, "favorite_count", "id", action, in.VideoId)
 		if err != nil {
-			logx.Errorf("UpdateFavoriteStatusLogic------->UpdateStatus err : %v\n", err)
+			logx.Errorf("UpdateFavoriteStatusLogic------->UpdateStatus err : %v", err.Error())
 			return err
 		}
 		return nil

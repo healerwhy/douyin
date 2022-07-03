@@ -33,7 +33,8 @@ func (l *GetUserFavoriteLogic) GetUserFavorite(in *userOptPb.GetUserFavoriteReq)
 
 		res, err := l.svcCtx.UserFavoriteModel.FindAll(l.ctx, whereBuilder, "")
 		if err != nil {
-			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFavorite  err , id:%d , err:%v", in.UserId, err)
+			logx.Errorf("GetUserFavorite  err , id:%d , err:%s", in.UserId, err.Error())
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFavorite  err")
 		}
 
 		// 该用户对视频的点赞映射
@@ -48,12 +49,14 @@ func (l *GetUserFavoriteLogic) GetUserFavorite(in *userOptPb.GetUserFavoriteReq)
 		return &userOptPb.GetUserFavoriteResp{
 			UserFavoriteList: respUserFavoriteList,
 		}, nil
+
 	} else { // 给拉取点赞列表使用 查询的是用户对哪些视频进行了点赞
 		whereBuilder := l.svcCtx.UserFavoriteModel.RowBuilder().Where("user_id = ? and is_favorite != 0 ", in.UserId)
 
 		res, err := l.svcCtx.UserFavoriteModel.FindAll(l.ctx, whereBuilder, "user_id ASC")
 		if err != nil {
-			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFavorite  err , id:%d , err:%v", in.UserId, err)
+			logx.Errorf("GetUserFavorite  err , id:%d , err:%s", in.UserId, err.Error())
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserFavorite  err")
 		}
 
 		/*

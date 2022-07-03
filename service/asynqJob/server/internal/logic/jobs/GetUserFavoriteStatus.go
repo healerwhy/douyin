@@ -12,7 +12,6 @@ import (
 	"strings"
 )
 
-// GetUserFavoriteStatusHandler   shcedule billing to home business
 type GetUserFavoriteStatusHandler struct {
 	svcCtx *svc.ServiceContext
 }
@@ -28,14 +27,14 @@ func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq
 
 	vals, err := l.svcCtx.RedisCache.SmembersCtx(ctx, globalkey.FavoriteSetKey)
 	if err != nil {
-		logx.Errorf("RedisCache.SmembersCtx error -----> %v", err)
+		logx.Errorf("RedisCache.SmembersCtx error -----> %s", err.Error())
 		return err
 	}
 	if len(vals) == 0 {
+		logx.Infof("every 10s exec But not exist data in redis cache")
 		return nil
 	}
 
-	logx.Infof("NewGetUserFavoriteStatusHandler server -----> every 10s exec AND exist data in redis cache")
 	// 持久化数据
 	mr.ForEach(func(source chan<- interface{}) {
 		for _, videoIdKey := range vals {
@@ -44,11 +43,10 @@ func (l *GetUserFavoriteStatusHandler) ProcessTask(ctx context.Context, _ *asynq
 	}, func(item interface{}) {
 		videoIdKey := item.(string)
 
-		// 从拉下来的东西都删掉users, err :=
 		usersInfoTemp, err := l.svcCtx.RedisCache.EvalShaCtx(ctx, l.svcCtx.ScriptREMTag, []string{videoIdKey})
 
 		if err != nil { // 获取赞了这个视频的所有的用户Id
-			logx.Errorf("RedisCache.SmembersCtx error -----> %v", err)
+			logx.Errorf("RedisCache.SmembersCtx error -----> %s", err.Error())
 			return
 		}
 

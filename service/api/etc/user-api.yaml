@@ -1,0 +1,59 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 22222
+
+Mode: test
+
+Log:
+  Encoding: plain
+
+# 腾讯云
+COSConf:
+  SecretId: SecretId
+  SecretKey: SecretKey
+  MachineId: 1
+  VideoBucket: https://xxxx.cos.ap-guangzhou.myqcloud.com
+  CoverBucket: https://xxxx.cos.ap-guangzhou.myqcloud.com
+  CommentBucket: https://xxxx.cos.ap-guangzhou.myqcloud.com
+
+# rpc
+UserInfoService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: userinfoservice.rpc
+  NonBlock: true
+
+VideoService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: videoservice.rpc
+  NonBlock: true
+
+UserOptService:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:33333
+    Key: useroptservice.rpc
+  NonBlock: true
+
+Cache:
+  - Host: localhost:6379
+    Pass: password
+
+# kafka
+UserFavoriteOptServiceConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: UserFavoriteOptService-topic
+
+UserCommentOptServiceConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: UserCommentOptService-topic
+
+UserFollowOptServiceConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: UserFollowOptService-topic
