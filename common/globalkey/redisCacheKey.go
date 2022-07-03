@@ -1,17 +1,11 @@
 package globalkey
 
-/**
-redis key except "model cache key"  in here,
-but "model cache key" in model
-*/
-
-//// CacheUserTokenKey /** 用户登陆的token
-//const CacheUserTokenKey = "user_token:%d"
+// 存放的是api记录点赞和关注放在redis的key与valTpl
 
 const FavoriteSetKey = "FavoriteKey"
-const FavoriteTpl = "Favorite&Video&Id:%d"
+const FavoriteSetValTpl = "Favorite&Video&Id:%d"
 
 const FollowSetKey = "FollowKey"
-const FollowTpl = "Follow&Follow&Id:%d"
+const FollowSetValTpl = "Follow&Follow&Id:%d"
 
 const ExistDataValTpl = "%d:%d"
