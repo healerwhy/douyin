@@ -1,8 +1,7 @@
 # 字节跳动青训营 - douyin [项目文档](https://ljxltr3g7w.feishu.cn/docs/doccnLberlBxkQjylBal5I6Tg6g)
 
 # 业务架构
-![](https://cover-1312359504.cos.ap-guangzhou.myqcloud.com/How%20We%20Built%20Whimsical%401.100000023841858x.webp)
-
+![](https://raw.githubusercontent.com/healerwhy/douyin/main/How%20We%20Built%20Whimsical%401.100000023841858x.webp)
 # common
  存放公共代码：主要有对象存储的上传、下载、删除，token的生成与解析，Kafka所需的消息结构体，公共错误代码等。
 
